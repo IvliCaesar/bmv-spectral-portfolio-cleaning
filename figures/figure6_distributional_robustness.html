@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #vis.vega-embed {
+      width: 100%;
+      display: flex;
+    }
+
+    #vis.vega-embed details,
+    #vis.vega-embed details summary {
+      position: relative;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@6"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.1"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@7"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    (function(vegaEmbed) {
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300, "stroke": null}, "axis": {"grid": true, "gridColor": "#E8E8E8", "labelFontSize": 12, "titleFontSize": 13}, "legend": {"labelFontSize": 11, "orient": "bottom"}, "title": {"anchor": "start", "fontSize": 17}}, "data": {"name": "data-3a375e8e4ea276f3d7d71ffe370eaaad"}, "mark": {"type": "line", "point": {"size": 90}, "strokeWidth": 2}, "description": "Holdout volatility for four estimators after fitting on raw or rank-Gaussianized training marginals. The holdout remains untransformed.", "encoding": {"color": {"field": "estimator", "scale": {"domain": ["Sample", "Eigenvalue clipping", "Ledoit-Wolf", "RIE"], "range": ["#4C78A8", "#F58518", "#54A24B", "#B279A2"]}, "title": "Estimator", "type": "nominal"}, "detail": {"field": "estimator", "type": "nominal"}, "tooltip": [{"field": "estimator", "title": "Estimator", "type": "nominal"}, {"field": "training_transform", "title": "Training transformation", "type": "nominal"}, {"field": "volatility", "format": ".4f", "title": "Holdout vol. (%/day)", "type": "quantitative"}], "x": {"axis": {"labelAngle": 0}, "field": "training_transform", "sort": ["Raw", "Rank-Gaussianized"], "title": null, "type": "nominal"}, "y": {"field": "volatility", "scale": {"domain": [0.675, 0.7], "zero": false}, "title": "Holdout volatility (% per day)", "type": "quantitative"}}, "height": 280, "title": "Rank-Gaussianizing training data weakens, but preserves, RIE's edge over sample", "width": 650, "$schema": "https://vega.github.io/schema/vega-lite/v6.4.1.json", "datasets": {"data-3a375e8e4ea276f3d7d71ffe370eaaad": [{"estimator": "Sample", "training_transform": "Raw", "volatility": 0.6884}, {"estimator": "Eigenvalue clipping", "training_transform": "Raw", "volatility": 0.686}, {"estimator": "Ledoit-Wolf", "training_transform": "Raw", "volatility": 0.6837}, {"estimator": "RIE", "training_transform": "Raw", "volatility": 0.6794}, {"estimator": "Sample", "training_transform": "Rank-Gaussianized", "volatility": 0.6942}, {"estimator": "Eigenvalue clipping", "training_transform": "Rank-Gaussianized", "volatility": 0.6887}, {"estimator": "Ledoit-Wolf", "training_transform": "Rank-Gaussianized", "volatility": 0.6919}, {"estimator": "RIE", "training_transform": "Rank-Gaussianized", "volatility": 0.687}]}};
+      var embedOpt = {"renderer": "svg", "mode": "vega-lite"};
+
+      function showError(el, error){
+          el.innerHTML = ('<div style="color:red;">'
+                          + '<p>JavaScript Error: ' + error.message + '</p>'
+                          + "<p>This usually means there's a typo in your chart specification. "
+                          + "See the javascript console for the full traceback.</p>"
+                          + '</div>');
+          throw error;
+      }
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt)
+        .catch(error => showError(el, error));
+    })(vegaEmbed);
+
+  </script>
+</body>
+</html>

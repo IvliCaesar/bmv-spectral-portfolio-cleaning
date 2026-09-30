@@ -1,0 +1,5 @@
+estimator,in_sample_volatility_pct_per_day,holdout_volatility_pct_per_day,annualized_sharpe,effective_number_assets,shannon_effective_breadth
+Sample,0.7077,0.6884,-0.244,9.36,26.92
+Eigenvalue clipping,0.7182,0.6860,-0.110,9.32,26.54
+Ledoit-Wolf,0.7059,0.6837,-0.235,9.75,26.93
+RIE,0.7103,0.6794,-0.233,9.86,26.92

@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "Please cite the working paper and its authors."
+title: "Spectral Covariance Cleaning, Portfolio Breadth, and Market Proxies: Evidence from Mexican Equities"
+authors:
+  - family-names: "Galindo López"
+    given-names: "Julio César"
+  - family-names: "Jiménez Casillas"
+    given-names: "Laura"
+affiliation: "Universidad Panamericana, Ciudad UP"
+date-released: 2026-09-30
+repository-code: "https://github.com/IvliCaesar/bmv-spectral-portfolio-cleaning"
+type: software

@@ -1,0 +1,5 @@
+proxy,state,matched_days,Sample,Eigenvalue clipping,Ledoit-Wolf,RIE
+VOMXCUS,Below threshold,318,0.6041,0.6033,0.5989,0.5961
+VOMXCUS,Above threshold,188,0.7953,0.7873,0.7911,0.7845
+VOMXGUS,Below threshold,333,0.6686,0.6719,0.6632,0.6594
+VOMXGUS,Above threshold,173,0.7091,0.6905,0.7052,0.6998

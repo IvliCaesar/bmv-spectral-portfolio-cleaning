@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #vis.vega-embed {
+      width: 100%;
+      display: flex;
+    }
+
+    #vis.vega-embed details,
+    #vis.vega-embed details summary {
+      position: relative;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@6"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.1"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@7"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    (function(vegaEmbed) {
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300, "stroke": null}, "axis": {"grid": true, "gridColor": "#E8E8E8", "labelFontSize": 11, "titleFontSize": 12}, "title": {"anchor": "start", "fontSize": 17}}, "data": {"name": "data-28ec6464d861c2c913168d47c76980df"}, "mark": {"type": "line", "point": {"size": 150}, "strokeWidth": 2}, "description": "For the 25-stock total-return panel, clipping reduces correlation condition number from 24.34 to 5.33 and covariance condition number from 279.55 to 128.49.", "encoding": {"color": {"field": "estimator", "legend": null, "scale": {"domain": ["Sample", "Eigenvalue clipping"], "range": ["#4C78A8", "#F58518"]}, "type": "nominal"}, "column": {"field": "matrix", "title": null, "type": "nominal"}, "detail": {"field": "matrix", "type": "nominal"}, "tooltip": [{"field": "matrix", "title": "Matrix", "type": "nominal"}, {"field": "estimator", "title": "Estimator", "type": "nominal"}, {"field": "condition_number", "format": ".2f", "title": "Condition number", "type": "quantitative"}, {"field": "q", "format": ".2f", "title": "N/T", "type": "quantitative"}], "x": {"axis": {"labelAngle": 0}, "field": "estimator", "sort": null, "title": null, "type": "nominal"}, "y": {"field": "condition_number", "scale": {"type": "log"}, "title": "Condition number", "type": "quantitative"}}, "height": 290, "title": "Eigenvalue clipping improves conditioning at q = 0.25", "width": 265, "$schema": "https://vega.github.io/schema/vega-lite/v6.4.1.json", "datasets": {"data-28ec6464d861c2c913168d47c76980df": [{"field": "Gross total-return index", "matrix": "Covariance", "estimator": "Sample", "condition_number": 279.55, "largest_correlation_eigenvalue": null, "mp_upper_edge": null, "q": 0.25, "assets": 25, "returns": 100, "start_date": "2026-05-13", "end_date": "2026-09-29"}, {"field": "Gross total-return index", "matrix": "Covariance", "estimator": "Eigenvalue clipping", "condition_number": 128.49, "largest_correlation_eigenvalue": null, "mp_upper_edge": null, "q": 0.25, "assets": 25, "returns": 100, "start_date": "2026-05-13", "end_date": "2026-09-29"}, {"field": "Gross total-return index", "matrix": "Correlation", "estimator": "Sample", "condition_number": 24.34, "largest_correlation_eigenvalue": 4.178, "mp_upper_edge": 2.25, "q": 0.25, "assets": 25, "returns": 100, "start_date": "2026-05-13", "end_date": "2026-09-29"}, {"field": "Gross total-return index", "matrix": "Correlation", "estimator": "Eigenvalue clipping", "condition_number": 5.33, "largest_correlation_eigenvalue": 4.178, "mp_upper_edge": 2.25, "q": 0.25, "assets": 25, "returns": 100, "start_date": "2026-05-13", "end_date": "2026-09-29"}]}};
+      var embedOpt = {"renderer": "svg", "mode": "vega-lite"};
+
+      function showError(el, error){
+          el.innerHTML = ('<div style="color:red;">'
+                          + '<p>JavaScript Error: ' + error.message + '</p>'
+                          + "<p>This usually means there's a typo in your chart specification. "
+                          + "See the javascript console for the full traceback.</p>"
+                          + '</div>');
+          throw error;
+      }
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt)
+        .catch(error => showError(el, error));
+    })(vegaEmbed);
+
+  </script>
+</body>
+</html>

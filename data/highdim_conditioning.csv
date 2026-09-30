@@ -1,0 +1,7 @@
+field,matrix,estimator,condition_number,largest_correlation_eigenvalue,mp_upper_edge,q,assets,returns,start_date,end_date
+Gross total-return index,Covariance,Sample,279.55,,,0.25,25,100,2026-05-13,2026-09-29
+Gross total-return index,Covariance,Eigenvalue clipping,128.49,,,0.25,25,100,2026-05-13,2026-09-29
+Gross total-return index,Correlation,Sample,24.34,4.178,2.25,0.25,25,100,2026-05-13,2026-09-29
+Gross total-return index,Correlation,Eigenvalue clipping,5.33,4.178,2.25,0.25,25,100,2026-05-13,2026-09-29
+Unadjusted PX_LAST,Correlation,Sample,24.31,4.170,2.25,0.25,25,100,2026-05-13,2026-09-29
+Unadjusted PX_LAST,Correlation,Eigenvalue clipping,5.30,4.170,2.25,0.25,25,100,2026-05-13,2026-09-29

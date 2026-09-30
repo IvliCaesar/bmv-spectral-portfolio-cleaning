@@ -1,0 +1,7 @@
+summary_file,underlying_source,period_or_design,source_terms,what_is_public
+primary_outcomes.csv,Economatica adjusted BMV prices,2011-07-18 to 2025-09-29,"Licensed; raw panel excluded","Four estimators' aggregate out-of-sample metrics"
+distributional_robustness.csv,Economatica adjusted BMV prices,2011-07-18 to 2025-09-29,"Licensed; raw panel excluded","Four aggregate holdout volatilities under two training transforms"
+market_regimes.csv,Bloomberg VOM-labelled series and USD/MXN,Matched holdout dates in 2021-2025,"Licensed; raw export excluded; VOM fields undocumented","Aggregate conditional portfolio volatility and counts"
+highdim_conditioning.csv,Bloomberg BMV/BIVA workbook,2026-05-13 to 2026-09-29,"Licensed; workbook excluded","Aggregate condition numbers and top-eigenvalue diagnostics"
+q_gt_1.csv,Economatica adjusted BMV returns,10 short-window trials; 38 assets and 20 training days,"Licensed; raw panel excluded","Aggregate annualized realized volatility"
+inference_summary.csv,Economatica returns and public Kenneth French daily factors,529-day holdout; 522 matched factor dates,"Licensed BMV input excluded; factor file available from source","Selected reported inferential summaries"

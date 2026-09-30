@@ -1,0 +1,5 @@
+estimator,raw_training_holdout_volatility_pct_per_day,rank_gaussianized_training_holdout_volatility_pct_per_day
+Sample,0.6884,0.6942
+Eigenvalue clipping,0.6860,0.6887
+Ledoit-Wolf,0.6837,0.6919
+RIE,0.6794,0.6870

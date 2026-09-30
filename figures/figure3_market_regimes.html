@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #vis.vega-embed {
+      width: 100%;
+      display: flex;
+    }
+
+    #vis.vega-embed details,
+    #vis.vega-embed details summary {
+      position: relative;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@6"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.1"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@7"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    (function(vegaEmbed) {
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300, "stroke": null}, "axis": {"grid": true, "gridColor": "#E8E8E8", "labelFontSize": 11, "titleFontSize": 12}, "legend": {"labelFontSize": 11, "orient": "bottom"}, "title": {"anchor": "start", "fontSize": 17}}, "data": {"name": "data-6c8b83cdad3ceba1736ba6845776ca85"}, "mark": {"type": "line", "point": {"size": 95}, "strokeWidth": 2}, "description": "Descriptive portfolio volatility above and below a fixed training-period 90th-percentile threshold for two VOM-labelled series. The economic meaning of these fields has not been verified.", "encoding": {"color": {"field": "estimator", "scale": {"domain": ["Sample", "Eigenvalue clipping", "Ledoit-Wolf", "RIE"], "range": ["#4C78A8", "#F58518", "#54A24B", "#B279A2"]}, "title": "Estimator", "type": "nominal"}, "column": {"field": "proxy", "header": {"labelFontSize": 12}, "title": null, "type": "nominal"}, "detail": {"field": "estimator", "type": "nominal"}, "tooltip": [{"field": "proxy", "title": "Proxy", "type": "nominal"}, {"field": "estimator", "title": "Estimator", "type": "nominal"}, {"field": "state", "title": "State", "type": "nominal"}, {"field": "matched_days", "title": "Matched days", "type": "quantitative"}, {"field": "volatility", "format": ".4f", "title": "Volatility (%/day)", "type": "quantitative"}], "x": {"axis": {"labelAngle": 0}, "field": "state", "sort": ["Below threshold", "Above threshold"], "title": null, "type": "nominal"}, "y": {"field": "volatility", "scale": {"domain": [0.56, 0.82], "zero": false}, "title": "Portfolio volatility (% per day)", "type": "quantitative"}}, "height": 270, "title": "High-threshold days coincide with higher realized risk", "width": 360, "$schema": "https://vega.github.io/schema/vega-lite/v6.4.1.json", "datasets": {"data-6c8b83cdad3ceba1736ba6845776ca85": [{"proxy": "VOMXCUS*", "state": "Below threshold", "matched_days": 318, "estimator": "Sample", "volatility": 0.6041}, {"proxy": "VOMXCUS*", "state": "Above threshold", "matched_days": 188, "estimator": "Sample", "volatility": 0.7953}, {"proxy": "VOMXGUS*", "state": "Below threshold", "matched_days": 333, "estimator": "Sample", "volatility": 0.6686}, {"proxy": "VOMXGUS*", "state": "Above threshold", "matched_days": 173, "estimator": "Sample", "volatility": 0.7091}, {"proxy": "VOMXCUS*", "state": "Below threshold", "matched_days": 318, "estimator": "Eigenvalue clipping", "volatility": 0.6033}, {"proxy": "VOMXCUS*", "state": "Above threshold", "matched_days": 188, "estimator": "Eigenvalue clipping", "volatility": 0.7873}, {"proxy": "VOMXGUS*", "state": "Below threshold", "matched_days": 333, "estimator": "Eigenvalue clipping", "volatility": 0.6719}, {"proxy": "VOMXGUS*", "state": "Above threshold", "matched_days": 173, "estimator": "Eigenvalue clipping", "volatility": 0.6905}, {"proxy": "VOMXCUS*", "state": "Below threshold", "matched_days": 318, "estimator": "Ledoit-Wolf", "volatility": 0.5989}, {"proxy": "VOMXCUS*", "state": "Above threshold", "matched_days": 188, "estimator": "Ledoit-Wolf", "volatility": 0.7911}, {"proxy": "VOMXGUS*", "state": "Below threshold", "matched_days": 333, "estimator": "Ledoit-Wolf", "volatility": 0.6632}, {"proxy": "VOMXGUS*", "state": "Above threshold", "matched_days": 173, "estimator": "Ledoit-Wolf", "volatility": 0.7052}, {"proxy": "VOMXCUS*", "state": "Below threshold", "matched_days": 318, "estimator": "RIE", "volatility": 0.5961}, {"proxy": "VOMXCUS*", "state": "Above threshold", "matched_days": 188, "estimator": "RIE", "volatility": 0.7845}, {"proxy": "VOMXGUS*", "state": "Below threshold", "matched_days": 333, "estimator": "RIE", "volatility": 0.6594}, {"proxy": "VOMXGUS*", "state": "Above threshold", "matched_days": 173, "estimator": "RIE", "volatility": 0.6998}]}};
+      var embedOpt = {"renderer": "svg", "mode": "vega-lite"};
+
+      function showError(el, error){
+          el.innerHTML = ('<div style="color:red;">'
+                          + '<p>JavaScript Error: ' + error.message + '</p>'
+                          + "<p>This usually means there's a typo in your chart specification. "
+                          + "See the javascript console for the full traceback.</p>"
+                          + '</div>');
+          throw error;
+      }
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt)
+        .catch(error => showError(el, error));
+    })(vegaEmbed);
+
+  </script>
+</body>
+</html>

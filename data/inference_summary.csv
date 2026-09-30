@@ -1,0 +1,5 @@
+quantity,estimate,lower_95,upper_95,p_value,details
+RIE_minus_sample_annualized_Sharpe,0.011,-0.021,0.057,0.186,"5,000 paired moving-block bootstrap resamples; 20-day blocks; one-sided p-value"
+VOMXCUS_high_state_volatility_change_pct,,,,,"Descriptive per-estimator increases: 30.5% to 32.1%; 188 high and 318 low matched days"
+VOMXGUS_high_state_volatility_change_pct,,,,,"Descriptive per-estimator increases: 2.8% to 6.3%; 173 high and 333 low matched days"
+RIE_FF5_daily_alpha,0.000002,,,0.995,"522 matched holdout dates; five U.S. equity factors; exploratory cross-market diagnostic"

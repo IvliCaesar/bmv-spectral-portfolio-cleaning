@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #vis.vega-embed {
+      width: 100%;
+      display: flex;
+    }
+
+    #vis.vega-embed details,
+    #vis.vega-embed details summary {
+      position: relative;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@6"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.1"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@7"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    (function(vegaEmbed) {
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300, "stroke": null}, "axis": {"grid": true, "gridColor": "#E8E8E8", "labelFontSize": 12, "titleFontSize": 13}, "title": {"anchor": "start", "fontSize": 17}}, "layer": [{"mark": {"type": "point", "filled": true, "size": 180}, "encoding": {"color": {"field": "estimator", "legend": null, "scale": {"domain": ["Sample", "Eigenvalue clipping", "Ledoit-Wolf", "RIE"], "range": ["#4C78A8", "#F58518", "#54A24B", "#B279A2"]}, "type": "nominal"}, "tooltip": [{"field": "estimator", "title": "Estimator", "type": "nominal"}, {"field": "mean_annualized_realized_volatility_pct", "format": ".2f", "title": "Mean annualized vol. (%)", "type": "quantitative"}, {"field": "window_std_annualized_volatility_pct", "format": ".2f", "title": "RIE window SD (%)", "type": "quantitative"}], "x": {"axis": {"labelAngle": 0}, "field": "estimator", "sort": null, "title": null, "type": "nominal"}, "y": {"field": "mean_annualized_realized_volatility_pct", "scale": {"domain": [8, 200], "type": "log"}, "title": "Mean annualized realized volatility (%)", "type": "quantitative"}}}, {"mark": {"type": "text", "color": "#222", "dy": -12}, "encoding": {"color": {"field": "estimator", "legend": null, "scale": {"domain": ["Sample", "Eigenvalue clipping", "Ledoit-Wolf", "RIE"], "range": ["#4C78A8", "#F58518", "#54A24B", "#B279A2"]}, "type": "nominal"}, "text": {"field": "mean_annualized_realized_volatility_pct", "format": ".2f", "type": "quantitative"}, "tooltip": [{"field": "estimator", "title": "Estimator", "type": "nominal"}, {"field": "mean_annualized_realized_volatility_pct", "format": ".2f", "title": "Mean annualized vol. (%)", "type": "quantitative"}, {"field": "window_std_annualized_volatility_pct", "format": ".2f", "title": "RIE window SD (%)", "type": "quantitative"}], "x": {"axis": {"labelAngle": 0}, "field": "estimator", "sort": null, "title": null, "type": "nominal"}, "y": {"field": "mean_annualized_realized_volatility_pct", "scale": {"domain": [8, 200], "type": "log"}, "title": "Mean annualized realized volatility (%)", "type": "quantitative"}}}], "data": {"name": "data-f49702dd3f16b42655d850bd84cc6f45"}, "description": "Mean annualized realized volatility over ten short-window trials. The RIE window-to-window standard deviation is 320.17 percent.", "height": 300, "title": "At q = 1.9, this unmodified RIE implementation is unstable", "width": 650, "$schema": "https://vega.github.io/schema/vega-lite/v6.4.1.json", "datasets": {"data-f49702dd3f16b42655d850bd84cc6f45": [{"estimator": "Sample", "mean_annualized_realized_volatility_pct": 16.57, "window_std_annualized_volatility_pct": null, "assets": 38, "training_days": 20, "test_days": 60, "q": 1.9, "number_windows": 10}, {"estimator": "Eigenvalue clipping", "mean_annualized_realized_volatility_pct": 11.78, "window_std_annualized_volatility_pct": null, "assets": 38, "training_days": 20, "test_days": 60, "q": 1.9, "number_windows": 10}, {"estimator": "Ledoit-Wolf", "mean_annualized_realized_volatility_pct": 12.12, "window_std_annualized_volatility_pct": null, "assets": 38, "training_days": 20, "test_days": 60, "q": 1.9, "number_windows": 10}, {"estimator": "RIE", "mean_annualized_realized_volatility_pct": 144.43, "window_std_annualized_volatility_pct": 320.17, "assets": 38, "training_days": 20, "test_days": 60, "q": 1.9, "number_windows": 10}]}};
+      var embedOpt = {"renderer": "svg", "mode": "vega-lite"};
+
+      function showError(el, error){
+          el.innerHTML = ('<div style="color:red;">'
+                          + '<p>JavaScript Error: ' + error.message + '</p>'
+                          + "<p>This usually means there's a typo in your chart specification. "
+                          + "See the javascript console for the full traceback.</p>"
+                          + '</div>');
+          throw error;
+      }
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt)
+        .catch(error => showError(el, error));
+    })(vegaEmbed);
+
+  </script>
+</body>
+</html>

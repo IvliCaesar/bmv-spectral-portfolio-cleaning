@@ -1,0 +1,5 @@
+estimator,mean_annualized_realized_volatility_pct,window_std_annualized_volatility_pct,assets,training_days,test_days,q,number_windows
+Sample,16.57,,38,20,60,1.9,10
+Eigenvalue clipping,11.78,,38,20,60,1.9,10
+Ledoit-Wolf,12.12,,38,20,60,1.9,10
+RIE,144.43,320.17,38,20,60,1.9,10
