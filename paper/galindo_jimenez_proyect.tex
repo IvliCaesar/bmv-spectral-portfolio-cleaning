@@ -1,0 +1,265 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\emergencystretch}{3em}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setlist[itemize]{leftmargin=1.5em,itemsep=2pt,topsep=3pt}
+\setlist[enumerate]{leftmargin=1.8em,itemsep=4pt,topsep=3pt}
+
+\title{Proyecto de artículo: estimación de covarianzas y carteras\\
+de mínima varianza en acciones mexicanas}
+\author{Julio César Galindo López\\
+\small Universidad Panamericana, Ciudad UP
+\and
+Laura Jiménez Casillas\\
+\small Universidad Panamericana, Ciudad UP}
+\date{Borrador de discusión para Laura\\1 de octubre de 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+Este documento propone el esqueleto y el programa de trabajo para un artículo
+empírico sobre estimación de covarianzas y carteras de mínima varianza en
+acciones mexicanas. La pregunta propuesta es: \emph{¿cuánto cambia la
+evaluación fuera de muestra de los estimadores de covarianza al incorporar
+restricciones long-only, un benchmark ingenuo y rebalanceo periódico?}
+El punto de partida es un panel Bloomberg de retornos totales brutos para 37
+acciones, con 3,706 observaciones diarias entre 2011 y 2025. En los resultados
+preliminares disponibles, RIE reduce levemente la volatilidad frente a la
+covarianza muestral en la partición fija, pero su Sharpe es menor; la cartera
+long-only $1/N$ obtiene el mayor Sharpe puntual tanto en esa partición como en
+el ejercicio rolling. Estos resultados son descriptivos de un universo
+retrospectivo y una trayectoria histórica. El diseño no resuelve el sesgo de
+supervivencia ni incorpora costos de transacción observados. Por ello, el
+documento presenta una propuesta para decidir alcance, análisis adicionales
+y viabilidad editorial; no es una versión lista para envío.
+\end{abstract}
+
+\section{Propósito de esta nota}
+
+El objetivo es que los coautores acuerden primero la pregunta, el alcance y
+las condiciones mínimas para seguir desarrollando el proyecto. La versión
+existente contiene una reestimación inicial y un artículo más desarrollado;
+esta nota reduce la propuesta a un plan de revisión. No presupone que Laura
+haya aprobado el enfoque, el calendario, la autoría final ni la selección de
+revista.
+
+\section{Pregunta y contribución propuestas}
+
+\subsection{Pregunta de investigación}
+
+\begin{quote}
+\emph{¿Cuánto cambia la evaluación fuera de muestra de los estimadores de
+covarianza para carteras de mínima varianza en acciones mexicanas cuando se
+imponen restricciones long-only, se incluye el benchmark $1/N$ y se considera
+rebalanceo periódico?}
+\end{quote}
+
+\subsection{Contribución a evaluar}
+
+El posible aporte es metodológico y empírico, no la afirmación de que un
+estimador sea universalmente superior. El artículo compararía covarianza
+muestral (SM), clipping espectral (CL), shrinkage de Ledoit--Wolf (LW) y
+shrinkage no lineal RIE; separaría el riesgo realizado del rendimiento
+ajustado por riesgo; y documentaría cómo las restricciones y el protocolo de
+rebalanceo alteran la comparación con $1/N$.
+
+La aplicación mexicana puede interesar a la literatura de mercados emergentes,
+pero por sí sola no garantiza ajuste a \emph{Emerging Markets Review}. La
+revista espera una contribución significativa para finanzas de mercados
+emergentes, no sólo la aplicación de una técnica a un país. La relevancia
+institucional o regional y la generalización deben sostenerse con evidencia,
+no añadirse como afirmaciones retóricas. La adecuación editorial se debe
+reevaluar después de decidir si se amplía el diseño.
+
+\section{Estado de la evidencia}
+
+El panel de trabajo usa el campo Bloomberg
+\texttt{TOT\_RETURN\_INDEX\_GROSS\_DVDS} para 37 acciones mapeadas desde una
+lista candidata anterior de 38 valores. FUNO11 no tuvo una pestaña utilizable
+en el archivo y no se sustituyó. Las series balanceadas abarcan del 18 de
+julio de 2011 al 29 de septiembre de 2025. El corte cronológico fijo reserva
+741 observaciones para prueba (28 de noviembre de 2022--29 de septiembre de
+2025); la ventana previa contiene 2,965 observaciones.
+
+\begin{table}[ht]
+\centering
+\caption{Resultados preliminares que motivan la revisión}
+\label{tab:preliminary}
+\small
+\begin{tabularx}{\textwidth}{Y Y}
+\toprule
+Diseño & Resultado descriptivo disponible \\
+\midrule
+Holdout fijo, pesos sin restricciones &
+Volatilidad diaria de RIE 0.6952\% frente a 0.6998\% para SM. El Sharpe
+anualizado es $-0.232$ para RIE y $-0.207$ para SM; diferencia RIE--SM
+$-0.0248$, IC bootstrap de 95\% $[-0.0451,-0.0038]$. \\
+Holdout fijo, long-only &
+Sharpe puntual de $-0.035$ para RIE y 0.450 para $1/N$. La diferencia RIE--$1/N$
+es $-0.485$; su IC bootstrap de 95\% $[-1.068,0.053]$ incluye cero. \\
+Rolling, 25 bloques de 21 observaciones &
+Con ventana estimadora de 504 observaciones, Sharpe long-only de $-0.646$
+para RIE y 0.767 para $1/N$. Diferencia RIE--$1/N$ $-1.413$; IC bootstrap
+de 95\% $[-2.333,-0.641]$. Usa la misma trayectoria histórica que el holdout,
+por lo que no es una réplica independiente. \\
+Costos hipotéticos &
+Con 50 pb por unidad de turnover unidireccional, el retorno medio anualizado
+rolling es 0.57\% para RIE y 18.03\% para $1/N$. No son costos observados;
+se excluyen costos iniciales y otras fricciones. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Estos resultados no demuestran que RIE sea generalmente inferior ni que
+$1/N$ vaya a superar a las carteras optimizadas fuera de esta muestra.
+Describen estimaciones condicionadas a una selección de activos, una
+trayectoria, una tasa libre de riesgo fijada en 8\% y pesos estimados. Además,
+la significancia nominal del contraste primario no incorpora incertidumbre
+por selección del universo o por elección de modelos.
+
+\section{Esqueleto del artículo}
+
+\begin{enumerate}
+\item \textbf{Introducción.} Plantear el problema económico, la pregunta
+única y la diferencia entre reducir varianza y mejorar desempeño ajustado por
+riesgo. Delimitar desde el inicio que la evidencia es mexicana y no una
+estimación de un efecto común a los mercados emergentes.
+\item \textbf{Literatura y predicciones.} Revisar la optimización de
+media-varianza, error de estimación, limpieza espectral, shrinkage, carteras
+long-only y el benchmark $1/N$. Formular predicciones contrastables sin
+presuponer que la limpieza domina.
+\item \textbf{Datos y universo.} Describir proveedor, campo de retorno total,
+fechas, ticker mapping, tratamiento de acciones corporativas y faltantes.
+Explicar la exclusión de FUNO11, la selección retrospectiva y el riesgo de
+supervivencia. Precisar qué puede y qué no puede redistribuirse por licencia.
+\item \textbf{Diseño empírico.} Definir estimadores, optimización sin
+restricciones y long-only, benchmark $1/N$, métricas, tasa libre de riesgo,
+costos, turnover, ventanas y reglas de inferencia. Separar el test fijo del
+walk-forward y evitar presentarlos como muestras independientes.
+\item \textbf{Resultados.} Presentar primero la comparación primaria
+preespecificada; después, restricciones, benchmark, rolling, turnover y
+costos. Reportar estimaciones e intervalos, no sólo rankings puntuales.
+\item \textbf{Robustez y límites de diseño.} Evaluar ventanas, bloques de
+bootstrap, tasa libre de riesgo, costos plausibles, concentración y universo.
+Indicar con claridad qué robusteces son sensibilidad sobre la misma historia.
+\item \textbf{Discusión para finanzas de mercados emergentes.} Explicar qué
+implicaciones son defendibles para una decisión de inversión en México y qué
+evidencia adicional sería necesaria para generalizar a otros mercados.
+\item \textbf{Conclusión.} Responder la pregunta dentro del alcance de los
+datos; enumerar como trabajo futuro un universo punto-en-tiempo, costos
+observados y una comparación regional.
+\end{enumerate}
+
+\section{Programa de trabajo propuesto}
+
+El calendario es una propuesta de ocho semanas desde el acuerdo de los
+coautores. Las fechas y la distribución de responsabilidades deben confirmarse
+con Laura antes de tratarse como compromisos.
+
+\begin{table}[ht]
+\centering
+\caption{Plan tentativo de trabajo}
+\label{tab:workplan}
+\small
+\begin{tabularx}{\textwidth}{p{0.14\textwidth}Y Y}
+\toprule
+Periodo & Actividad & Producto / criterio de salida \\
+\midrule
+Semana 1 &
+Conversación de alcance: aprobar pregunta, estimando primario, audiencia,
+papel de cada autor y límites de datos. &
+Decisiones compartidas y lista cerrada de preguntas secundarias. \\
+Semanas 2--3 &
+Auditoría de procedencia y universo; documentar tickers, dividendos, fechas,
+empresas excluidas y factibilidad de recuperar membresía histórica y
+deslistadas. &
+Diccionario de datos, mapa de cobertura y decisión explícita: ampliar el
+universo o presentar el análisis como estudio exploratorio condicionado. \\
+Semanas 3--4 &
+Preespecificar la validación: rolling walk-forward, reglas de reestimación,
+comparadores, ventanas, métricas y prueba primaria. Revisar la implementación
+de turnover y costos. &
+Protocolo reproducible y pruebas de consistencia entre las tablas, el código
+y el texto. \\
+Semanas 4--5 &
+Buscar factibilidad de costos de ejecución, liquidez y benchmark local;
+probar sensibilidad de tasa libre de riesgo y escenarios de costos. &
+Resultados con costos observados si hay fuente viable; de lo contrario,
+escenarios claramente identificados y limitados. \\
+Semanas 5--6 &
+Completar estimación ampliada, inferencia, tablas y gráficos; evaluar
+estabilidad temporal y sensibilidad. &
+Paquete de resultados congelado, sin cambios ad hoc a la pregunta primaria. \\
+Semanas 6--7 &
+Redactar el manuscrito en coautoría y revisar encaje editorial después de ver
+la evidencia ampliada. &
+Borrador completo con contribución, limitaciones y audiencia acordadas. \\
+Semana 8 &
+Auditoría final, réplica desde datos licenciados, revisión de referencias,
+disponibilidad de datos y decisión de envío. &
+Decisión informada: preparar envío, ampliar el proyecto o elegir otra revista. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Decisiones prioritarias para conversar con Laura}
+
+\begin{enumerate}
+\item ¿La pregunta y la contribución propuesta responden a un problema que
+ambos autores consideran publicable e interesante?
+\item ¿Se puede obtener un universo histórico punto-en-tiempo, incluyendo
+deslistadas, y bajo qué licencia y esfuerzo?
+\item ¿Hay acceso viable a información local de spreads, volumen, liquidez o
+costos de ejecución para sustituir o validar los escenarios hipotéticos?
+\item ¿Se justifica mantener como destino potencial \emph{Emerging Markets
+Review}, o conviene rediseñar para un outlet más adecuado si no se logra una
+contribución regional o institucional?
+\item ¿Qué resultados deben ser confirmatorios y cuáles quedarían claramente
+como exploratorios?
+\end{enumerate}
+
+\section{Criterios para continuar y riesgos}
+
+\begin{itemize}
+\item \textbf{Continuar hacia un envío a EMR} sólo si la revisión identifica
+una contribución sustantiva a finanzas de mercados emergentes, y la evidencia
+soporta una afirmación más amplia que ``un ejercicio de cartera en México''.
+\item \textbf{Rediseñar o cambiar de revista} si el universo histórico y la
+relevancia regional no pueden fortalecerse. El buen acabado del texto no
+sustituye estas brechas de diseño.
+\item \textbf{No presentar} los costos hipotéticos como costos mexicanos
+observados, el rolling como réplica independiente, ni el universo balanceado
+como libre de sesgo de supervivencia.
+\item \textbf{Proteger datos licenciados}: compartir sólo resultados
+agregados permitidos y código que no redistribuya series, precios ni pesos
+por activo.
+\end{itemize}
+
+\section{Siguiente paso inmediato}
+
+Usar esta nota para una reunión de alcance con Laura. Si ambos acuerdan
+pregunta y factibilidad, el primer entregable será el protocolo empírico
+preespecificado; si no, ajustar la pregunta antes de invertir en una nueva
+corrida o en una reescritura extensa.
+
+\vfill
+\noindent\textbf{Documento de discusión.} Los resultados incluidos son
+preliminares y corresponden al paquete agregado de trabajo disponible al
+1 de octubre de 2026. Este proyecto no se presenta como artículo aceptado ni
+como manuscrito listo para envío.
+
+\end{document}
