@@ -13,7 +13,7 @@
 \setlist[itemize]{leftmargin=1.5em,itemsep=2pt,topsep=3pt}
 \setlist[enumerate]{leftmargin=1.8em,itemsep=4pt,topsep=3pt}
 
-\title{Proyecto de artículo: estimación de covarianzas y carteras\\
+\title{Preguntas de investigación para el proyecto de carteras\\
 de mínima varianza en acciones mexicanas}
 \author{Julio César Galindo López\\
 \small Universidad Panamericana, Ciudad UP
@@ -27,11 +27,12 @@ Laura Jiménez Casillas\\
 
 \begin{abstract}
 \noindent
-Este documento propone el esqueleto y el programa de trabajo para un artículo
-empírico sobre estimación de covarianzas y carteras de mínima varianza en
-acciones mexicanas. La pregunta propuesta es: \emph{¿cuánto cambia la
-evaluación fuera de muestra de los estimadores de covarianza al incorporar
-restricciones long-only, un benchmark ingenuo y rebalanceo periódico?}
+Este documento propone varias preguntas de investigación para discutir y
+priorizar entre los coautores antes de fijar el diseño de un artículo
+empírico sobre carteras de mínima varianza en acciones mexicanas. Las
+alternativas se distinguen por su estimando y por los datos adicionales que
+requieren; se recomienda elegir una pregunta principal y tratar las demás
+como extensiones sólo si los datos lo permiten.
 El punto de partida es un panel Bloomberg de retornos totales brutos para 37
 acciones, con 3,706 observaciones diarias entre 2011 y 2025. En los resultados
 preliminares disponibles, RIE reduce levemente la volatilidad frente a la
@@ -40,8 +41,8 @@ long-only $1/N$ obtiene el mayor Sharpe puntual tanto en esa partición como en
 el ejercicio rolling. Estos resultados son descriptivos de un universo
 retrospectivo y una trayectoria histórica. El diseño no resuelve el sesgo de
 supervivencia ni incorpora costos de transacción observados. Por ello, el
-documento presenta una propuesta para decidir alcance, análisis adicionales
-y viabilidad editorial; no es una versión lista para envío.
+documento presenta alternativas de pregunta, una propuesta de estructura y
+un programa de trabajo; no es una versión lista para envío.
 \end{abstract}
 
 \section{Propósito de esta nota}
@@ -50,12 +51,12 @@ El objetivo es que los coautores acuerden primero la pregunta, el alcance y
 las condiciones mínimas para seguir desarrollando el proyecto. La versión
 existente contiene una reestimación inicial y un artículo más desarrollado;
 esta nota reduce la propuesta a un plan de revisión. No presupone que Laura
-haya aprobado el enfoque, el calendario, la autoría final ni la selección de
-revista.
+haya aprobado el enfoque, el calendario, la autoría final ni la pregunta
+principal.
 
-\section{Pregunta y contribución propuestas}
+\section{Preguntas de investigación candidatas}
 
-\subsection{Pregunta de investigación}
+\subsection{Opción de partida}
 
 \begin{quote}
 \emph{¿Cuánto cambia la evaluación fuera de muestra de los estimadores de
@@ -64,22 +65,54 @@ imponen restricciones long-only, se incluye el benchmark $1/N$ y se considera
 rebalanceo periódico?}
 \end{quote}
 
-\subsection{Contribución a evaluar}
+Esta opción aprovecha directamente los análisis ya realizados. Su foco es la
+comparación entre estimadores bajo distintas reglas de inversión; su
+limitación principal es que los resultados actuales dependen de un universo
+retrospectivo y de una sola trayectoria histórica.
 
-El posible aporte es metodológico y empírico, no la afirmación de que un
-estimador sea universalmente superior. El artículo compararía covarianza
-muestral (SM), clipping espectral (CL), shrinkage de Ledoit--Wolf (LW) y
-shrinkage no lineal RIE; separaría el riesgo realizado del rendimiento
-ajustado por riesgo; y documentaría cómo las restricciones y el protocolo de
-rebalanceo alteran la comparación con $1/N$.
+\subsection{Alternativas para discutir}
 
-La aplicación mexicana puede interesar a la literatura de mercados emergentes,
-pero por sí sola no garantiza ajuste a \emph{Emerging Markets Review}. La
-revista espera una contribución significativa para finanzas de mercados
-emergentes, no sólo la aplicación de una técnica a un país. La relevancia
-institucional o regional y la generalización deben sostenerse con evidencia,
-no añadirse como afirmaciones retóricas. La adecuación editorial se debe
-reevaluar después de decidir si se amplía el diseño.
+\begin{enumerate}
+\item \textbf{¿La limpieza espectral mejora la medición del riesgo que enfrenta
+un inversionista?} Comparar, fuera de muestra, las predicciones de matrices de
+covarianza de SM, CL, LW y RIE con medidas de riesgo realizadas posteriores.
+El estimando central sería la precisión de pronóstico de covarianzas o de
+volatilidad de cartera, no el Sharpe de una cartera optimizada. Requiere
+definir una función de pérdida antes de observar los resultados y conservar
+ventanas rolling sin solapamientos indebidos.
+
+\item \textbf{¿Las restricciones long-only cambian la utilidad práctica de
+los estimadores?} Medir cómo varían desempeño, riesgo, concentración y
+turnover al pasar de pesos sin restricciones a long-only, manteniendo el
+benchmark $1/N$. Esta pregunta separa el efecto del estimador del efecto de
+las reglas de inversión. Es la extensión más próxima al análisis existente.
+
+\item \textbf{¿Las carteras optimizadas conservan una ventaja después de
+costos de negociación y límites de liquidez?} Comparar rendimientos netos
+con costos calculados a partir de spreads y volumen, incluyendo restricciones
+de participación y activos difíciles de negociar. Esta pregunta requiere
+datos observados de ejecución o proxies locales defendibles; los escenarios
+hipotéticos actuales no bastan para responderla.
+
+\item \textbf{¿Cuándo, si acaso, cambia el desempeño relativo según las
+condiciones del mercado?} Evaluar si los resultados varían entre estados
+definidos ex ante, como periodos de alta y baja volatilidad o liquidez. Los
+umbrales y las series que definen los estados deben especificarse sin usar
+los resultados de cartera para escogerlos; las pruebas requieren potencia y
+observaciones suficientes por estado.
+
+\item \textbf{¿Se generalizan los resultados a otros mercados emergentes?}
+Replicar un protocolo armonizado en otros países y comparar patrones de
+estimación, restricciones, costos y benchmarks. Es una extensión sustantiva,
+pero exige universos punto-en-tiempo, retornos totales y calendarios
+comparables; sin esa armonización, las diferencias entre países serían
+difíciles de interpretar.
+\end{enumerate}
+
+Las alternativas implican objetos distintos y no conviene incorporarlas
+todas en una sola pregunta. Para la conversación inicial, se recomienda
+elegir una como pregunta principal, fijar su resultado primario y decidir qué
+otras preguntas son extensiones condicionadas a la disponibilidad de datos.
 
 \section{Estado de la evidencia}
 
@@ -127,10 +160,10 @@ fortalecer el estudio mexicano de los que permitirían sostener una
 contribución regional más amplia.
 
 La prioridad principal es reconstruir el \textbf{universo histórico
-punto-en-tiempo de BMV/BIVA}. Necesitamos los constituyentes y las fechas efectivas de
-entrada y salida, incluidas empresas deslistadas, fusiones y cambios de
-ticker, además de identificadores estables —por ejemplo, ISIN u otro
-identificador histórico enlazable—. Esto permitiría definir qué activos
+punto-en-tiempo de BMV/BIVA}. Necesitamos los constituyentes y las fechas
+efectivas de entrada y salida, incluidas empresas deslistadas, fusiones y
+cambios de ticker, además de identificadores estables —por ejemplo, ISIN u
+otro identificador histórico enlazable—. Esto permitiría definir qué activos
 podían pertenecer al universo en cada fecha y reducir el sesgo de
 supervivencia y selección retrospectiva. Una lista de emisoras actuales no
 sería suficiente.
@@ -152,17 +185,17 @@ si las carteras son implementables.
 
 Para interpretar el desempeño se necesita además una \textbf{serie mexicana
 fechada de tasa libre de riesgo}, con vencimiento definido —por ejemplo,
-CETES adecuado al horizonte—, y un \textbf{benchmark mexicano de retorno total} cuya
-metodología y composición estén documentadas. Esto evitaría depender sólo de
-la tasa fija de 8\% y situaría las carteras frente al mercado local.
+CETES adecuado al horizonte—, y un \textbf{benchmark mexicano de retorno
+total} cuya metodología y composición estén documentadas. Esto evitaría
+depender sólo de la tasa fija de 8\% y situaría las carteras frente al mercado
+local.
 
-Por último, si se quiere ampliar la contribución para \emph{Emerging Markets
-Review}, convendría buscar datos comparables de uno o más mercados emergentes:
+Por último, para evaluar si los resultados se extienden más allá de México,
+convendría buscar datos comparables de uno o más mercados emergentes:
 universos históricos, retornos totales, activos deslistados, benchmarks,
 tasas libres de riesgo y medidas de liquidez, con reglas armonizadas y fechas
-compatibles. La extensión permitiría evaluar si los patrones se extienden
-más allá de México, pero una comparación regional con coberturas distintas
-podría añadir sesgos en vez de resolverlos.
+compatibles. Una comparación regional con coberturas distintas podría añadir
+sesgos en vez de resolverlos.
 
 \subsection{Orden práctico de adquisición}
 
@@ -213,9 +246,9 @@ costos. Reportar estimaciones e intervalos, no sólo rankings puntuales.
 \item \textbf{Robustez y límites de diseño.} Evaluar ventanas, bloques de
 bootstrap, tasa libre de riesgo, costos plausibles, concentración y universo.
 Indicar con claridad qué robusteces son sensibilidad sobre la misma historia.
-\item \textbf{Discusión para finanzas de mercados emergentes.} Explicar qué
-implicaciones son defendibles para una decisión de inversión en México y qué
-evidencia adicional sería necesaria para generalizar a otros mercados.
+\item \textbf{Discusión.} Explicar qué implicaciones son defendibles para una
+decisión de inversión en México y qué evidencia adicional sería necesaria
+para generalizar a otros mercados.
 \item \textbf{Conclusión.} Responder la pregunta dentro del alcance de los
 datos; enumerar como trabajo futuro un universo punto-en-tiempo, costos
 observados y una comparación regional.
@@ -255,14 +288,15 @@ la inferencia, los gráficos y las sensibilidades de estabilidad temporal.
 El objetivo es congelar un paquete de resultados sin modificar la pregunta
 primaria a la luz de los resultados.
 
-En las \textbf{semanas sexta y séptima}, se redactará el manuscrito en coautoría y
-se revisará el encaje editorial con la evidencia ampliada. La salida será un
-borrador completo con contribución, limitaciones y audiencia acordadas.
+En las \textbf{semanas sexta y séptima}, se redactará el manuscrito en
+coautoría y se revisará que la pregunta, la contribución y el alcance estén
+alineados con la evidencia ampliada. La salida será un borrador completo con
+limitaciones y audiencia académica acordadas.
 
 En la \textbf{octava semana}, se realizará la auditoría final y la réplica desde
 los datos licenciados, se revisarán referencias y disponibilidad de datos, y
-se decidirá si conviene preparar el envío, ampliar el proyecto o elegir otra
-revista.
+se decidirá si conviene cerrar el manuscrito, ampliar el proyecto o cambiar
+su alcance.
 
 \subsection{Decisiones prioritarias para conversar con Laura}
 
@@ -276,10 +310,8 @@ costos de ejecución para sustituir o validar los escenarios hipotéticos?
 \item ¿Qué proveedor puede entregar el universo BMV/BIVA punto-en-tiempo, con
 deslistadas e identificadores estables, y los retornos totales asociados?
 \item ¿Hay datos comparables de otros mercados emergentes con definiciones y
-cobertura temporal que permitan una extensión regional defendible?
-\item ¿Se justifica mantener como destino potencial \emph{Emerging Markets
-Review}, o conviene rediseñar para un outlet más adecuado si no se logra una
-contribución regional o institucional?
+cobertura temporal compatibles, si se decide explorar una comparación
+entre países?
 \item ¿Qué resultados deben ser confirmatorios y cuáles quedarían claramente
 como exploratorios?
 \end{enumerate}
@@ -287,12 +319,12 @@ como exploratorios?
 \section{Criterios para continuar y riesgos}
 
 \begin{itemize}
-\item \textbf{Continuar hacia un envío a EMR} sólo si la revisión identifica
-una contribución sustantiva a finanzas de mercados emergentes, y la evidencia
-soporta una afirmación más amplia que ``un ejercicio de cartera en México''.
-\item \textbf{Rediseñar o cambiar de revista} si el universo histórico y la
-relevancia regional no pueden fortalecerse. El buen acabado del texto no
-sustituye estas brechas de diseño.
+\item \textbf{Fijar una pregunta principal} sólo después de acordar cuál
+estimando responde a un problema empírico claro y qué datos permiten
+identificarlo.
+\item \textbf{Ampliar el diseño} si se puede reconstruir el universo histórico
+y obtener datos de costos o liquidez; de lo contrario, presentar los
+resultados como evidencia condicionada y limitar las afirmaciones.
 \item \textbf{No presentar} los costos hipotéticos como costos mexicanos
 observados, el rolling como réplica independiente, ni el universo balanceado
 como libre de sesgo de supervivencia.
@@ -304,9 +336,10 @@ por activo.
 \section{Siguiente paso inmediato}
 
 Usar esta nota para una reunión de alcance con Laura. Si ambos acuerdan
-pregunta y factibilidad, el primer entregable será el protocolo empírico
-preespecificado; si no, ajustar la pregunta antes de invertir en una nueva
-corrida o en una reescritura extensa.
+cuál de las preguntas candidatas priorizar y qué datos son factibles, el
+primer entregable será el protocolo empírico preespecificado. Si no hay
+acuerdo, revisar las alternativas antes de invertir en una nueva corrida o
+en una reescritura extensa.
 
 \vfill
 \noindent\textbf{Documento de discusión.} Los resultados incluidos son
