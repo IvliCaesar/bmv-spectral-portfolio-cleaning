@@ -5,15 +5,11 @@
 \usepackage{lmodern}
 \usepackage{amsmath,amssymb}
 \usepackage[letterpaper,margin=1in]{geometry}
-\usepackage{booktabs}
-\usepackage{tabularx}
-\usepackage{array}
 \usepackage{enumitem}
 \usepackage{hyperref}
 
 \hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
 \setlength{\emergencystretch}{3em}
-\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \setlist[itemize]{leftmargin=1.5em,itemsep=2pt,topsep=3pt}
 \setlist[enumerate]{leftmargin=1.8em,itemsep=4pt,topsep=3pt}
 
@@ -95,34 +91,25 @@ julio de 2011 al 29 de septiembre de 2025. El corte cronológico fijo reserva
 741 observaciones para prueba (28 de noviembre de 2022--29 de septiembre de
 2025); la ventana previa contiene 2,965 observaciones.
 
-\begin{table}[ht]
-\centering
-\caption{Resultados preliminares que motivan la revisión}
-\label{tab:preliminary}
-\small
-\begin{tabularx}{\textwidth}{Y Y}
-\toprule
-Diseño & Resultado descriptivo disponible \\
-\midrule
-Holdout fijo, pesos sin restricciones &
-Volatilidad diaria de RIE 0.6952\% frente a 0.6998\% para SM. El Sharpe
-anualizado es $-0.232$ para RIE y $-0.207$ para SM; diferencia RIE--SM
-$-0.0248$, IC bootstrap de 95\% $[-0.0451,-0.0038]$. \\
-Holdout fijo, long-only &
-Sharpe puntual de $-0.035$ para RIE y 0.450 para $1/N$. La diferencia RIE--$1/N$
-es $-0.485$; su IC bootstrap de 95\% $[-1.068,0.053]$ incluye cero. \\
-Rolling, 25 bloques de 21 observaciones &
-Con ventana estimadora de 504 observaciones, Sharpe long-only de $-0.646$
-para RIE y 0.767 para $1/N$. Diferencia RIE--$1/N$ $-1.413$; IC bootstrap
-de 95\% $[-2.333,-0.641]$. Usa la misma trayectoria histórica que el holdout,
-por lo que no es una réplica independiente. \\
-Costos hipotéticos &
-Con 50 pb por unidad de turnover unidireccional, el retorno medio anualizado
-rolling es 0.57\% para RIE y 18.03\% para $1/N$. No son costos observados;
-se excluyen costos iniciales y otras fricciones. \\
-\bottomrule
-\end{tabularx}
-\end{table}
+En el holdout fijo con pesos sin restricciones, la volatilidad diaria de RIE
+es 0.6952\%, frente a 0.6998\% para SM. El Sharpe anualizado es $-0.232$ para
+RIE y $-0.207$ para SM; la diferencia RIE--SM es $-0.0248$, con IC bootstrap
+de 95\% $[-0.0451,-0.0038]$.
+
+Con restricciones long-only en el mismo holdout, el Sharpe puntual es
+$-0.035$ para RIE y 0.450 para $1/N$. La diferencia RIE--$1/N$ es $-0.485$;
+su IC bootstrap de 95\% $[-1.068,0.053]$ incluye cero.
+
+En el análisis rolling, que usa 25 bloques de 21 observaciones y una ventana
+estimadora de 504 observaciones, el Sharpe long-only es $-0.646$ para RIE y
+0.767 para $1/N$. La diferencia RIE--$1/N$ es $-1.413$, con IC bootstrap de
+95\% $[-2.333,-0.641]$. Este análisis comparte la trayectoria histórica con
+el holdout fijo y no constituye una réplica independiente.
+
+Finalmente, bajo un escenario hipotético de 50 puntos base por unidad de
+turnover unidireccional, el retorno medio anualizado rolling es 0.57\% para
+RIE y 18.03\% para $1/N$. No son costos observados; se excluyen costos
+iniciales y otras fricciones.
 
 Estos resultados no demuestran que RIE sea generalmente inferior ni que
 $1/N$ vaya a superar a las carteras optimizadas fuera de esta muestra.
@@ -139,52 +126,43 @@ sesgo de supervivencia. La lista siguiente separa los datos necesarios para
 fortalecer el estudio mexicano de los que permitirían sostener una
 contribución regional más amplia.
 
-\begin{table}[ht]
-\centering
-\caption{Datos por conseguir, prioridad y uso en el diseño}
-\label{tab:additional-data}
-\small
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.18\textwidth}Y Y}
-\toprule
-Prioridad & Datos requeridos & Uso y criterio de cobertura \\
-\midrule
-\textbf{1. Imprescindible} &
-Universo histórico punto-en-tiempo de BMV/BIVA: constituyentes y fechas
-efectivas de entrada y salida; empresas deslistadas, fusiones y cambios de
-ticker; identificadores estables (por ejemplo, ISIN u otro identificador
-histórico enlazable). &
-Definir qué activos podían pertenecer al universo en cada fecha y reducir el
-sesgo de supervivencia y selección retrospectiva. No basta una lista de
-emisoras actuales. \\
-\textbf{2. Imprescindible} &
-Retornos totales históricos para el universo reconstruido, incluyendo
-deslistadas, dividendos, splits, derechos y rendimientos de salida; frecuencia
-y cobertura temporal coherentes. &
-Reestimar el panel usando el universo elegible en cada fecha. Documentar
-cómo se tratan acciones corporativas, observaciones faltantes y salidas del
-mercado. \\
-\textbf{3. Muy valioso} &
-Liquidez y ejecución: bid--ask spreads, volumen negociado, días sin
-operación, turnover y, si es viable, costos o impacto de mercado; todos con
-fechas e identificadores compatibles con los retornos. &
-Reemplazar escenarios de costos asumidos con sensibilidades calibradas o
-costos observados y evaluar la factibilidad de implementación. \\
-\textbf{4. Para interpretar retornos} &
-Serie fechada de tasa libre de riesgo mexicana, con vencimiento definido
-(por ejemplo, CETES apropiado al horizonte), y benchmark mexicano de retorno
-total con metodología y composición documentadas. &
-Evitar depender exclusivamente de la tasa fija de 8\% y situar los resultados
-frente al mercado local. \\
-\textbf{5. Para ampliar el aporte a EMR} &
-Datos comparables para uno o más mercados emergentes: universo histórico,
-retornos totales, activos deslistados, benchmarks, tasas libres de riesgo y
-medidas de liquidez bajo reglas armonizadas y fechas compatibles. &
-Evaluar si los patrones se extienden más allá de México. Una comparación
-regional con coberturas o reglas distintas puede añadir sesgos en vez de
-resolverlos. \\
-\bottomrule
-\end{tabularx}
-\end{table}
+La prioridad principal es reconstruir el \textbf{universo histórico
+punto-en-tiempo de BMV/BIVA}. Necesitamos los constituyentes y las fechas efectivas de
+entrada y salida, incluidas empresas deslistadas, fusiones y cambios de
+ticker, además de identificadores estables —por ejemplo, ISIN u otro
+identificador histórico enlazable—. Esto permitiría definir qué activos
+podían pertenecer al universo en cada fecha y reducir el sesgo de
+supervivencia y selección retrospectiva. Una lista de emisoras actuales no
+sería suficiente.
+
+En segundo lugar, hacen falta \textbf{retornos totales históricos para el
+universo reconstruido}, incluidas las empresas deslistadas y con tratamiento
+consistente de dividendos, splits, derechos y rendimientos de salida. La
+frecuencia y cobertura temporal deben ser coherentes; también habría que
+documentar observaciones faltantes, acciones corporativas y salidas de
+mercado. Estos datos son los que permitirían volver a estimar las carteras
+con el conjunto elegible en cada momento.
+
+Para evaluar implementación, sería muy valioso conseguir \textbf{medidas
+históricas de liquidez y ejecución}: bid--ask spreads, volumen negociado,
+días sin operación y turnover y, si es viable, costos o impacto de mercado.
+Deben tener fechas e identificadores compatibles con los retornos. Así se
+podrían reemplazar o calibrar los escenarios hipotéticos actuales y evaluar
+si las carteras son implementables.
+
+Para interpretar el desempeño se necesita además una \textbf{serie mexicana
+fechada de tasa libre de riesgo}, con vencimiento definido —por ejemplo,
+CETES adecuado al horizonte—, y un \textbf{benchmark mexicano de retorno total} cuya
+metodología y composición estén documentadas. Esto evitaría depender sólo de
+la tasa fija de 8\% y situaría las carteras frente al mercado local.
+
+Por último, si se quiere ampliar la contribución para \emph{Emerging Markets
+Review}, convendría buscar datos comparables de uno o más mercados emergentes:
+universos históricos, retornos totales, activos deslistados, benchmarks,
+tasas libres de riesgo y medidas de liquidez, con reglas armonizadas y fechas
+compatibles. La extensión permitiría evaluar si los patrones se extienden
+más allá de México, pero una comparación regional con coberturas distintas
+podría añadir sesgos en vez de resolverlos.
 
 \subsection{Orden práctico de adquisición}
 
@@ -249,51 +227,42 @@ El calendario es una propuesta de ocho semanas desde el acuerdo de los
 coautores. Las fechas y la distribución de responsabilidades deben confirmarse
 con Laura antes de tratarse como compromisos.
 
-\begin{table}[ht]
-\centering
-\caption{Plan tentativo de trabajo}
-\label{tab:workplan}
-\small
-\begin{tabularx}{\textwidth}{p{0.14\textwidth}Y Y}
-\toprule
-Periodo & Actividad & Producto / criterio de salida \\
-\midrule
-Semana 1 &
-Conversación de alcance: aprobar pregunta, estimando primario, audiencia,
-papel de cada autor y límites de datos. &
-Decisiones compartidas y lista cerrada de preguntas secundarias. \\
-Semanas 2--3 &
-Auditoría de procedencia y universo; documentar tickers, dividendos, fechas,
-empresas excluidas y factibilidad de recuperar membresía histórica y
-deslistadas. &
-Diccionario de datos, mapa de cobertura y decisión explícita: ampliar el
-universo o presentar el análisis como estudio exploratorio condicionado. \\
-Semanas 3--4 &
-Preespecificar la validación: rolling walk-forward, reglas de reestimación,
-comparadores, ventanas, métricas y prueba primaria. Revisar la implementación
-de turnover y costos. &
-Protocolo reproducible y pruebas de consistencia entre las tablas, el código
-y el texto. \\
-Semanas 4--5 &
-Buscar factibilidad de costos de ejecución, liquidez y benchmark local;
-probar sensibilidad de tasa libre de riesgo y escenarios de costos. &
-Resultados con costos observados si hay fuente viable; de lo contrario,
-escenarios claramente identificados y limitados. \\
-Semanas 5--6 &
-Completar estimación ampliada, inferencia, tablas y gráficos; evaluar
-estabilidad temporal y sensibilidad. &
-Paquete de resultados congelado, sin cambios ad hoc a la pregunta primaria. \\
-Semanas 6--7 &
-Redactar el manuscrito en coautoría y revisar encaje editorial después de ver
-la evidencia ampliada. &
-Borrador completo con contribución, limitaciones y audiencia acordadas. \\
-Semana 8 &
-Auditoría final, réplica desde datos licenciados, revisión de referencias,
-disponibilidad de datos y decisión de envío. &
-Decisión informada: preparar envío, ampliar el proyecto o elegir otra revista. \\
-\bottomrule
-\end{tabularx}
-\end{table}
+Durante la \textbf{primera semana}, la conversación con Laura debería cerrar la
+pregunta, el estimando primario, la audiencia, el papel de cada autor y los
+límites de los datos. El resultado será una lista compartida de decisiones y
+preguntas secundarias.
+
+En las \textbf{semanas segunda y tercera}, se auditarán procedencia y universo:
+tickers, dividendos, fechas, empresas excluidas y posibilidad de recuperar
+membresía histórica con deslistadas. El producto será un diccionario de datos
+y un mapa de cobertura, junto con una decisión explícita sobre ampliar el
+universo o mantener el análisis como evidencia exploratoria condicionada.
+
+Entre las \textbf{semanas tercera y cuarta}, se preespecificará la validación:
+walk-forward, reglas de reestimación, comparadores, ventanas, métricas e
+inferencia primaria. También se verificará el cálculo de turnover y costos.
+La salida será un protocolo reproducible y comprobaciones de consistencia
+entre código, tablas y texto.
+
+En las \textbf{semanas cuarta y quinta}, se buscará la factibilidad de obtener
+costos de ejecución, medidas de liquidez y un benchmark local; además, se
+probará la sensibilidad a la tasa libre de riesgo y a los escenarios de
+costos. Si no hay datos de ejecución viables, los escenarios se conservarán
+como hipotéticos y se etiquetarán con claridad.
+
+Durante las \textbf{semanas quinta y sexta}, se completarán la estimación ampliada,
+la inferencia, los gráficos y las sensibilidades de estabilidad temporal.
+El objetivo es congelar un paquete de resultados sin modificar la pregunta
+primaria a la luz de los resultados.
+
+En las \textbf{semanas sexta y séptima}, se redactará el manuscrito en coautoría y
+se revisará el encaje editorial con la evidencia ampliada. La salida será un
+borrador completo con contribución, limitaciones y audiencia acordadas.
+
+En la \textbf{octava semana}, se realizará la auditoría final y la réplica desde
+los datos licenciados, se revisarán referencias y disponibilidad de datos, y
+se decidirá si conviene preparar el envío, ampliar el proyecto o elegir otra
+revista.
 
 \subsection{Decisiones prioritarias para conversar con Laura}
 
