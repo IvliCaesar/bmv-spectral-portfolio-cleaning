@@ -131,6 +131,85 @@ trayectoria, una tasa libre de riesgo fijada en 8\% y pesos estimados. Además,
 la significancia nominal del contraste primario no incorpora incertidumbre
 por selección del universo o por elección de modelos.
 
+\section{Datos adicionales necesarios}
+
+La prioridad es corregir primero la selección del universo; obtener más
+observaciones para las mismas acciones no elimina por sí solo el posible
+sesgo de supervivencia. La lista siguiente separa los datos necesarios para
+fortalecer el estudio mexicano de los que permitirían sostener una
+contribución regional más amplia.
+
+\begin{table}[ht]
+\centering
+\caption{Datos por conseguir, prioridad y uso en el diseño}
+\label{tab:additional-data}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.18\textwidth}Y Y}
+\toprule
+Prioridad & Datos requeridos & Uso y criterio de cobertura \\
+\midrule
+\textbf{1. Imprescindible} &
+Universo histórico punto-en-tiempo de BMV/BIVA: constituyentes y fechas
+efectivas de entrada y salida; empresas deslistadas, fusiones y cambios de
+ticker; identificadores estables (por ejemplo, ISIN u otro identificador
+histórico enlazable). &
+Definir qué activos podían pertenecer al universo en cada fecha y reducir el
+sesgo de supervivencia y selección retrospectiva. No basta una lista de
+emisoras actuales. \\
+\textbf{2. Imprescindible} &
+Retornos totales históricos para el universo reconstruido, incluyendo
+deslistadas, dividendos, splits, derechos y rendimientos de salida; frecuencia
+y cobertura temporal coherentes. &
+Reestimar el panel usando el universo elegible en cada fecha. Documentar
+cómo se tratan acciones corporativas, observaciones faltantes y salidas del
+mercado. \\
+\textbf{3. Muy valioso} &
+Liquidez y ejecución: bid--ask spreads, volumen negociado, días sin
+operación, turnover y, si es viable, costos o impacto de mercado; todos con
+fechas e identificadores compatibles con los retornos. &
+Reemplazar escenarios de costos asumidos con sensibilidades calibradas o
+costos observados y evaluar la factibilidad de implementación. \\
+\textbf{4. Para interpretar retornos} &
+Serie fechada de tasa libre de riesgo mexicana, con vencimiento definido
+(por ejemplo, CETES apropiado al horizonte), y benchmark mexicano de retorno
+total con metodología y composición documentadas. &
+Evitar depender exclusivamente de la tasa fija de 8\% y situar los resultados
+frente al mercado local. \\
+\textbf{5. Para ampliar el aporte a EMR} &
+Datos comparables para uno o más mercados emergentes: universo histórico,
+retornos totales, activos deslistados, benchmarks, tasas libres de riesgo y
+medidas de liquidez bajo reglas armonizadas y fechas compatibles. &
+Evaluar si los patrones se extienden más allá de México. Una comparación
+regional con coberturas o reglas distintas puede añadir sesgos en vez de
+resolverlos. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Orden práctico de adquisición}
+
+\begin{enumerate}
+\item Confirmar si es posible obtener membresía histórica BMV/BIVA con
+deslistadas e identificadores estables, y bajo qué licencia.
+\item Verificar que existan retornos totales utilizables para todos esos
+activos y para todo su periodo de elegibilidad. Si no se puede reconstruir
+este panel, mantener explícitamente el estudio como evidencia condicionada a
+la selección observada.
+\item Identificar disponibilidad de spreads, volumen y medidas de liquidez
+antes de formular afirmaciones sobre costos o implementación.
+\item Añadir una tasa libre de riesgo y benchmark mexicanos como controles de
+interpretación; evaluar la extensión a otros países sólo si se pueden
+armonizar universo, retornos y calendarios.
+\end{enumerate}
+
+\noindent\textbf{Metadatos que deben solicitarse junto con los datos:}
+diccionario de campos y unidades, moneda, calendario, reglas de dividendos y
+acciones corporativas, fechas efectivas de membresía, tratamiento de
+deslistadas y política de uso, publicación y redistribución. Los datos
+Bloomberg u otros datos licenciados no se deben incorporar al repositorio
+público; antes de compartir resultados agregados también hay que comprobar
+que su publicación esté permitida por la licencia.
+
 \section{Esqueleto del artículo}
 
 \begin{enumerate}
@@ -225,6 +304,10 @@ ambos autores consideran publicable e interesante?
 deslistadas, y bajo qué licencia y esfuerzo?
 \item ¿Hay acceso viable a información local de spreads, volumen, liquidez o
 costos de ejecución para sustituir o validar los escenarios hipotéticos?
+\item ¿Qué proveedor puede entregar el universo BMV/BIVA punto-en-tiempo, con
+deslistadas e identificadores estables, y los retornos totales asociados?
+\item ¿Hay datos comparables de otros mercados emergentes con definiciones y
+cobertura temporal que permitan una extensión regional defendible?
 \item ¿Se justifica mantener como destino potencial \emph{Emerging Markets
 Review}, o conviene rediseñar para un outlet más adecuado si no se logra una
 contribución regional o institucional?
