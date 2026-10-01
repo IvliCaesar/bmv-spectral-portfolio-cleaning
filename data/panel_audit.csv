@@ -1,0 +1,2 @@
+asset_count,observation_count,first_return_date,last_return_date,train_observations,test_observations,daily_gap_count_over_7_calendar_days,return_source,selected_universe
+37,3706,2011-07-18,2025-09-29,2965,741,0,Bloomberg TOT_RETURN_INDEX_GROSS_DVDS,37 mapped equities from the prior 38-stock list; FUNO11 absent from workbook

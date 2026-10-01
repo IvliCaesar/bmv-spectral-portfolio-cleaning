@@ -1,48 +1,47 @@
-# Spectral covariance cleaning and minimum-variance portfolios in Mexican equities
+# Covariance estimation under portfolio constraints in Mexican equities
 
 Research materials for the working paper by Julio César Galindo López and
-Laura Jiménez Casillas, affiliated with Universidad Panamericana, Ciudad UP.
+Laura Jiménez Casillas, Universidad Panamericana, Ciudad UP.
 
-**Research question.** Does nonlinear random-matrix-theory (RMT) covariance
-cleaning lower out-of-sample minimum-variance portfolio risk without reducing
-allocation breadth, and how do the observed results vary with market regimes
-and the asset-to-observation ratio?
+**Research question.** How sensitive are minimum-variance portfolio outcomes
+to covariance estimation when Mexican equities are evaluated under long-only
+constraints and periodic rebalancing?
 
-## Main findings
+## Current evidence
 
-- On a fixed 38-stock, 2,644-return panel, the 529-day chronological holdout
-  volatility is 0.6794% per day for RIE and 0.6884% for the sample covariance:
-  a 1.31% relative reduction. This is a descriptive difference, not a
-  statistically established volatility improvement.
-- The paired 20-day moving-block bootstrap estimates an annualized Sharpe
-  difference (RIE minus sample) of +0.011 (95% interval [-0.021, 0.057];
-  one-sided p=0.186). It does not establish a Sharpe improvement.
-- RIE's inverse-Herfindahl effective holdings count is 9.86 versus 9.36 for
-  the sample estimator, while Shannon effective breadth is 26.92 for both.
-  Conclusions about "diversity" therefore depend on the chosen allocation
-  metric and do not describe investor diversity.
-- In the two provisionally labelled Bloomberg VOM series, high-state daily
-  volatility is higher than low-state volatility. The increase is around
-  30--32% for VOMXCUS and 3--6% for VOMXGUS across the four estimators.
-  Bloomberg field metadata are missing, so these are descriptive associations
-  with provisional proxies, not causal market-regime effects.
-- On a matched 25-stock, 100-return panel ($q=0.25$), clipping lowers the
-  correlation-matrix condition number from 24.34 to 5.33. This is a
-  conditioning result, not evidence of better future portfolio returns.
-- In the deliberately short-window $q=1.9$ exercise, unmodified RIE is
-  unstable: mean annualized realized volatility is 144.43%, versus 11.78% for
-  clipping, 12.12% for Ledoit--Wolf, and 16.57% for the sample estimator.
-  This is an implementation boundary, not evidence that all nonlinear
-  shrinkage methods fail at $q>1$.
+The validated panel contains 37 equities mapped from a prior 38-security list
+to Bloomberg workbook tabs with `TOT_RETURN_INDEX_GROSS_DVDS`. It covers
+2011-07-18 to 2025-09-29, with 3,706 daily log returns and no gaps greater
+than seven calendar days. FUNO11 was absent from the workbook and was not
+replaced. The fixed chronological split uses 2,965 training and 741 holdout
+observations; the test interval is 2022-11-28 to 2025-09-29.
 
-The paper and the results files provide the complete set of reported
-estimands, caveats, and sample definitions. All charts in `figures/` are
-generated from the aggregate tables in `data/` with Altair. Their tooltips
-preserve the exact tabulated values.
+- In the unconstrained fixed holdout, RIE has daily volatility of 0.6952%,
+  compared with 0.6998% for sample covariance. Its annualized Sharpe is
+  -0.232 versus -0.207; the RIE-minus-sample difference is -0.0248 (20-day
+  moving-block 95% interval [-0.0451, -0.0038]; HAC p=0.015).
+- For long-only portfolios, fixed-holdout Sharpe estimates are -0.035 for
+  RIE and 0.450 for equal-weight 1/N. The difference is imprecise in this
+  single holdout (95% interval [-1.068, 0.053]; HAC p=0.099).
+- In 25 rolling 21-observation buy-and-hold blocks with a 504-observation
+  estimation window, long-only Sharpe is -0.646 for RIE and 0.767 for 1/N.
+  The RIE-minus-1/N difference is -1.413 (21-day moving-block 95% interval
+  [-2.333, -0.641]; HAC p=0.0013). This rolling analysis uses the same
+  historical trajectory as the fixed holdout and is not an independent
+  replication.
+- Mean one-way turnover per actual rolling rebalance is 5.05% for long-only
+  RIE and 2.81% for 1/N. At an assumed 50 basis points per unit of turnover,
+  annualized mean returns are 0.57% and 18.03%, respectively. These are
+  hypothetical sensitivities, not observed trading costs.
+
+The findings do not show that RIE is generally inferior or that 1/N will
+outperform in future samples. They show that a modest volatility reduction
+does not imply a Sharpe improvement and that constraints, rebalance protocol,
+and the naive benchmark materially affect the comparison.
 
 ## Reproduce the public artifacts
 
-Requirements: Python 3.10 or newer, Altair, `vl-convert-python`, and
+Requirements: Python 3.10 or newer, packages in `requirements.txt`, and
 pdflatex with the LaTeX packages used by the manuscript.
 
 ```powershell
@@ -52,53 +51,61 @@ python scripts/generate_figures.py
 powershell -ExecutionPolicy Bypass -File scripts/compile_paper.ps1
 ```
 
-`generate_figures.py` writes interactive Vega-Lite HTML and high-resolution PNG
-figures. The LaTeX source uses the PNGs for portable PDF compilation.
+The figures are generated from aggregate CSVs with Altair and exported as
+interactive Vega-Lite HTML and high-resolution PNG. The PDF uses the PNG
+figures. The public aggregate checks validate stored outputs; they do not
+re-estimate portfolios.
 
-## Data and reproducibility
+To rerun estimation, lawful access to a compatible Bloomberg workbook is
+required:
 
-The original Economática and Bloomberg price exports are licensed and are not
-included. The CSVs in `data/` are **aggregate summary statistics only**,
-transcribed from the reported analyses; they contain no daily prices, returns,
-constituent-level time series, weights, or Bloomberg exports. They are enough
-to recreate the displayed summary charts and to verify arithmetic and
-Marchenko--Pastur edge calculations. They are **not enough to rerun the
-portfolio estimation, bootstrap, factor regressions, regime classification,
-or eigendecompositions**. Reproducing those analyses requires lawful access to
-the licensed inputs and the complete computational workflow. This public
-repository contains summary checks and figure-generation code, not the
-original licensed-data estimation scripts; it is artifact-reproducible, not a
-full computational replication package.
+```powershell
+python scripts/run_licensed_panel_validation.py --input "C:\path\to\licensed-workbook.xlsx" --output "C:\path\to\aggregate-output"
+```
 
-The recent 25-stock panel used `TOT_RETURN_INDEX_GROSS_DVDS` from the
-September 2026 Bloomberg workbook. The 25-ticker set was fixed by a prior
-diagnostic, not sampled randomly from the 275 instrument tabs. Its results
-must not be generalized to the whole universe. VOM series labels and their
-economic meaning remain unverified.
+The estimation script writes aggregate CSV summaries only. Do not save a
+licensed workbook, raw prices or returns, or security-level portfolio weights
+inside this public repository.
+
+## Data, scope, and limitations
+
+Bloomberg data are licensed and are not redistributed. The repository
+contains aggregate results, a ticker-to-workbook-tab map, code, and figures;
+it contains no daily licensed prices, returns, or security weights.
+Reproduction requires lawful access to a compatible workbook with the
+documented tabs and total-return field.
+
+The 37-security universe is retrospective, not reconstructed from
+point-in-time BMV/BIVA membership. Balanced coverage does not remove
+survivorship, ticker-mapping, or ex-post selection bias. The analysis uses
+one fixed holdout and a rolling sensitivity on the same historical path;
+inference conditions on the chosen universe and fitted weights. Transaction
+costs are scenarios, not observed Mexican execution costs, and exclude
+liquidity constraints, market impact, taxes, short-sale frictions, and initial
+deployment. The risk-free rate is a fixed 8% assumption, not a local
+yield-series estimate. Thus, the paper does not establish a fully investable
+strategy, causal institutional effects, or results generalizable to other
+emerging economies.
+
+For a stronger submission to an emerging-markets finance journal, the
+highest-value extensions are a point-in-time universe including delisted
+securities, observed local trading-cost and liquidity measures, and a
+comparable multi-market design. This draft should not be described as
+submission-ready until those design limits and the journal fit are addressed.
 
 ## Repository layout
 
 ```text
-data/       Aggregate reported results and provenance notes
-figures/    Altair interactive HTML and static PNG charts
+data/       Aggregate outcomes, inference, and universe mapping
+figures/    Altair interactive HTML and static PNG figures
 paper/      LaTeX manuscript and compiled PDF
-scripts/    Chart generation, summary validation, and paper build
+scripts/    Estimation, validation, figure generation, and PDF build
 ```
 
 ## Citation and reuse
 
-Please cite the manuscript and the references listed there when using the
-research. The manuscript is a working draft, not a peer-reviewed article.
-No license granting reuse of the manuscript or data summaries is provided in
-this repository; obtain the authors' permission before redistributing them.
-Third-party data remain subject to their providers' terms.
-
-## Limitations
-
-The primary estimator comparison is one static-weight split, not a repeated
-walk-forward deployment study. The portfolios are unconstrained and exclude
-transaction costs, turnover, liquidity, short-sale frictions, and market
-impact. The primary universe's construction may also create selection or
-survivorship bias. The U.S. Fama--French factor regression is an exploratory
-cross-market diagnostic, not a Mexican-equity pricing test. See the manuscript
-for the complete discussion.
+Please cite the working paper and references listed in it when using the
+research. The manuscript is not peer reviewed. No license granting reuse of
+the manuscript or aggregate research artifacts is provided; obtain the
+authors' permission before redistribution. Bloomberg data remain subject to
+their provider's terms.

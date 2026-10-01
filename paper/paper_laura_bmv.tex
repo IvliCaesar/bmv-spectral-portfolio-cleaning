@@ -15,8 +15,8 @@
 \setlength{\emergencystretch}{3em}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 
-\title{Spectral Covariance Cleaning, Portfolio Breadth, and Market Proxies:\\
-Evidence from Mexican Equities}
+\title{Covariance Estimation under Portfolio Constraints in Mexican Equities:\\
+Static and Rolling Evidence}
 \author{Julio C\'esar Galindo L\'opez\\
 \small Universidad Panamericana, Ciudad UP
 \and
@@ -28,542 +28,339 @@ Laura Jim\'enez Casillas\\
 \maketitle
 
 \begin{abstract}
-Does nonlinear RMT covariance cleaning reduce out-of-sample minimum-variance
-portfolio risk without diminishing allocation breadth in Mexican equities,
-and how does the observed relationship vary across market proxies and
-asset-to-observation ratios? We compare sample, eigenvalue-clipped,
-Ledoit--Wolf, and
-rotationally invariant (RIE) covariance estimators on a common, chronological
-holdout from a 38-stock Bolsa Mexicana de Valores panel. On 529 test days, daily
-realized volatility is 0.6794\% per day for RIE and 0.6884\% for the sample
-estimator, a 1.31\% relative difference. This volatility comparison is
-descriptive: the paired 20-day moving-block bootstrap for the annualized
-Sharpe difference is $+0.011$ (95\% interval $[-0.021,0.057]$; one-sided
-$p=0.186$). RIE's inverse-Herfindahl effective holdings count is 9.86 versus
-9.36, while Shannon effective breadth is 26.92 for both; allocation-breadth
-conclusions depend on the measure. Two provisional VOM-labelled Bloomberg
-proxies show higher conditional holdout volatility above training-period
-90th-percentile thresholds, but their economic definitions are undocumented
-and the comparisons are descriptive. In a recent 25-stock, 100-return panel
-($q=0.25$), eigenvalue clipping reduces the correlation condition number from
-24.34 to 5.33. In ten deliberately short $q=1.9$ windows, this RIE
-implementation is unstable, with 144.43\% mean annualized realized
-volatility. The evidence supports a conditional, limited case for spectral
-regularization, not universal estimator dominance or a market-wide claim about
-investor diversity.
+Does covariance estimation materially change minimum-variance portfolio
+outcomes in Mexican equities once long-only constraints and periodic
+rebalancing are considered? We compare sample, eigenvalue-clipped,
+Ledoit--Wolf, and rotationally invariant (RIE) covariance estimators in a
+37-stock Bolsa Mexicana de Valores panel. Daily gross total returns provide
+3,706 observations; portfolio comparisons use simple returns, a common
+chronological holdout, long-only portfolios, an equally weighted benchmark,
+and a 504-observation rolling window with 21-observation buy-and-hold periods.
+In the fixed holdout, unconstrained RIE reduces daily volatility by 0.0046
+percentage points relative to the sample covariance estimator, but its
+annualized Sharpe difference is $-0.025$ (20-day moving-block 95\% interval
+$[-0.045,-0.004]$; HAC $p=0.015$). Under long-only constraints, RIE's Sharpe
+is $-0.035$, compared with $0.450$ for $1/N$. In the rolling design,
+long-only $1/N$ attains a Sharpe of $0.767$, while RIE attains $-0.646$;
+RIE's Sharpe difference relative to $1/N$ is $-1.413$ (21-day block-bootstrap
+95\% interval $[-2.333,-0.641]$). Hypothetical proportional-cost scenarios
+do not reverse this ranking, but no transaction costs are directly observed.
+The results do not establish a generalizable estimator ranking. They show
+that investor-relevant constraints, rebalancing, and comparison with a naive
+benchmark materially change the assessment of covariance cleaning in this
+selected Mexican-equity panel.
 \end{abstract}
 
-\noindent\textbf{Keywords:} random matrix theory; covariance estimation; Mexican
-equity market; minimum-variance portfolio; covariance conditioning; portfolio
-concentration; out-of-sample evaluation.
+\noindent\textbf{Keywords:} emerging markets; Mexican equities; portfolio
+selection; covariance estimation; minimum-variance portfolio; transaction
+costs; out-of-sample evaluation.
 
 \section{Introduction}
 
-The sample covariance matrix is a noisy input to portfolio optimization when
-the number of assets is not negligible relative to the return-history length.
-Because minimum-variance weights depend on its inverse, errors in the smallest
-sample eigenvalues can be magnified in the resulting positions. Random matrix
-theory (RMT) provides principled spectral corrections, including nonlinear
-shrinkage estimators that preserve the sample eigenvectors while modifying
-eigenvalues \cite{markowitz1952,demiguel2009,marchenko1967,laloux1999,ledoit2022}.
-Early empirical work
-documented noise in financial correlation spectra, while subsequent studies
-connected cleaning to portfolio optimization
-\cite{pafka2002,ledoitwolf2004}. Whether these corrections remain useful
-across market conditions while maintaining broad allocations is an empirical
-question for emerging equity markets.
+Covariance estimates are central to minimum-variance portfolio construction:
+the optimizer inverts the estimated risk matrix, so sampling error in small
+eigenvalues can lead to large and unstable positions. Spectral cleaning and
+shrinkage regularize this input, but a lower estimated portfolio variance
+does not ensure superior realized risk-adjusted returns or a feasible
+investment strategy. The comparison is especially relevant in emerging
+equity markets, where investable universes can be concentrated and trading
+frictions and data coverage can be important to portfolio design
+\cite{bekaert2007}.
 
-\paragraph{Research question.}
-\emph{Does nonlinear RMT spectral covariance cleaning lower out-of-sample
-minimum-variance portfolio risk without reducing allocation breadth in
-Mexican equities, and how do the observed risk and breadth outcomes vary with
-market proxies and the asset-to-observation ratio $q=N/T$?}
+The empirical question is \emph{how sensitive are minimum-variance portfolio
+outcomes to covariance estimation when Mexican equities are evaluated under
+long-only constraints and periodic rebalancing?} We compare four estimators
+on one common daily total-return panel, include the equally weighted $1/N$
+portfolio, and distinguish a static-weight holdout from a rolling
+buy-and-hold protocol. The application is a single-country analysis. It
+speaks to the choice of performance benchmarks and the limitations of
+covariance-based allocation in a Mexican equity sample; it does not estimate
+a regional emerging-market effect or a causal institutional mechanism.
 
-The article answers this question with one common chronological holdout for
-the primary estimator comparison, two separately exported Bloomberg
-market-indicator series for descriptive conditioning, and a recent
-high-dimensional cross-section. Each supplementary dataset has a distinct
-role; none is pooled into the primary panel.
-
-The contribution is deliberately empirical and bounded: (i) a common-date
-comparison separates small realized-volatility differences from Sharpe-ratio
-uncertainty; (ii) two distinct allocation-breadth measures reveal that a
-diversity conclusion is metric-dependent; and (iii) high-dimensional checks
-document improved conditioning at $q=0.25$ but instability of this particular
-unmodified RIE implementation at $q=1.9$.
+Three results motivate this distinction. First, in the fixed holdout, RIE
+has lower realized volatility than the sample covariance estimator but a
+lower Sharpe ratio. Second, the simple $1/N$ portfolio has a substantially
+higher point estimate of Sharpe than the long-only covariance-based
+portfolios. Third, monthly rolling comparisons preserve the large point
+estimate gap between $1/N$ and RIE, while estimated turnover and assumed
+cost scenarios are reported explicitly. The analysis is deliberately
+conditional on a retrospectively assembled 37-stock universe and one
+historical path.
 
 \section{Data and methods}
 
-\subsection{Primary BMV panel}
+\subsection{Daily total-return panel}
 
-The primary panel comprises 38 Mexican equities and 2,644 daily log-return
-observations, from 18 July 2011 through 29 September 2025, derived from adjusted
-Econom\'atica prices. The tickers are MFRISCOA-1, RA, SIMECB, FUNO11, ICHB,
-GENTERA, SORIANAB, ELEKTRA, CHDRAUIB, LIVEPOLC-1, AUTLANB, HERDEZ, GAPB,
-OMAB, MEGACPO, PINFRA, LABB, ALSEA, ARA, ASURB, AMXB, AC, AXTELCPO,
+The panel contains 37 Mexican equities mapped one-to-one from the original
+38-security candidate list to issuer tabs in the Bloomberg workbook
+downloaded in September 2026. We use Bloomberg's
+\texttt{TOT\_RETURN\_INDEX\_GROSS\_DVDS} field rather than unadjusted
+\texttt{PX\_LAST} prices. The 37 mapped tickers are MFRISCOA-1, RA, SIMECB,
+ICHB, GENTERA, SORIANAB, ELEKTRA, CHDRAUIB, LIVEPOLC-1, AUTLANB, HERDEZ,
+GAPB, OMAB, MEGACPO, PINFRA, LABB, ALSEA, ARA, ASURB, AMXB, AC, AXTELCPO,
 KIMBERA, CEMEXCPO, BIMBOA, BOLSAA, GCARSOA1, FEMSAUBD, GFNORTEO, GFINBURO,
-ORBIA, GRUMAB, GMEXICOB, PE\&OLES, TLEVISACPO, SIGMAFA, and WALMEX. We
-reserve the final 529 observations (3 May 2021--29
-September 2025) as a chronological holdout and estimate the covariance matrix
-on the preceding 2,115 observations. Thus $q=N/T_{\mathrm{train}}=38/2115
-\approx0.0180$. This common split is used for the estimator comparisons in
-Sections~\ref{sec:holdout}--\ref{sec:factor}; it avoids mixing results computed
-on different test windows.
+ORBIA, GRUMAB, GMEXICOB, PE\&OLES, TLEVISACPO, SIGMAFA, and WALMEX. FUNO11
+was absent from the workbook and was excluded rather than replaced. The
+balanced panel runs from 18 July 2011 through 29 September 2025 and contains
+3,706 daily log returns with no gaps longer than seven calendar days.
 
-Daily log returns are computed from adjusted prices. We compare the sample
-covariance (SM), Mar\v cenko--Pastur eigenvalue clipping (CL), Ledoit--Wolf
-linear shrinkage (LW), and analytic nonlinear rotationally-invariant
-shrinkage (RIE). CL standardizes to a correlation matrix, retains sample
-eigenvalues above the Mar\v cenko--Pastur upper edge, replaces the remaining
-bulk eigenvalues by their average, and restores the original marginal scales.
-For sample aspect ratio $q=N/T<1$, the theoretical noise support is
-$[\lambda_-,\lambda_+]$ with
-$\lambda_{\pm}=(1\pm\sqrt{q})^2$ under the Mar\v cenko--Pastur benchmark.
-LW is the standard identity-target linear shrinkage estimator. RIE applies
-kernel-based analytic nonlinear shrinkage to the sample eigenvalues while
-retaining the sample eigenvectors. The RIE implementation is designed for
-$q<1$; this article does not claim that the implementation is valid for
-$q\geq1$.
+The last 20\% of observations (741 dates, 28 November 2022--29 September
+2025) form a chronological holdout. Covariance matrices are estimated on the
+preceding 2,965 dates, so $q=N/T_{\mathrm{train}}=37/2965\approx0.0125$.
+The security set is retrospective, not reconstructed from historical
+BMV/BIVA membership. Its balanced coverage therefore does not remove
+survivorship, ticker-mapping, or ex-post selection bias. The 37 names are
+not treated as a representative index or as a complete investable universe.
 
-For each estimate $\widehat\Sigma$, the unconstrained global minimum-variance
-weights are
+\subsection{Covariance estimators and portfolios}
+
+We compare the sample covariance (SM), Mar\v cenko--Pastur eigenvalue
+clipping (CL), Ledoit--Wolf identity-target linear shrinkage (LW), and
+analytic rotationally invariant nonlinear shrinkage (RIE). CL standardizes
+the covariance to a correlation matrix, retains eigenvalues above the
+Mar\v cenko--Pastur upper edge, replaces the remaining bulk eigenvalues by
+their average, and restores the original marginal scales. RIE applies
+kernel-based analytic shrinkage to sample eigenvalues while retaining sample
+eigenvectors \cite{laloux1999,ledoitwolf2004,ledoit2022}. The implementation
+is designed for $q<1$.
+
+For each covariance estimate $\widehat\Sigma$, the unconstrained
+global minimum-variance weights are
 \[
   \widehat w =
   \frac{\widehat\Sigma^{-1}\mathbf{1}}
        {\mathbf{1}^{\mathsf T}\widehat\Sigma^{-1}\mathbf{1}},
   \qquad \mathbf{1}^{\mathsf T}\widehat w=1.
 \]
-All four methods use the same training dates, test dates, return units, and
-fully invested constraint. The covariance estimates and weights are fit once
-on the training sample and held fixed through the full chronological test
-window; this is a static holdout comparison, not a rolling rebalancing
-strategy. We do not include transaction costs, turnover, liquidity limits,
-market impact, short-sale constraints, or leverage constraints.
+The long-only version minimizes $w^{\mathsf T}\widehat\Sigma w$ subject to
+$\mathbf{1}^{\mathsf T}w=1$ and $0\leq w_i\leq1$. We also evaluate the
+equally weighted portfolio $w_i=1/N$, a standard benchmark in portfolio
+selection \cite{demiguel2009}.
 
-The primary outcomes are annualized Sharpe ratio (using an assumed 8\% annual
-risk-free rate), realized daily volatility on the holdout, and two
-allocation-breadth measures. The assumed risk-free rate is fixed across all
-estimators; results under alternative risk-free rates are not reported. The
-inverse-Herfindahl effective holdings count is
-$\mathrm{NEA}=1/\sum_i w_i^2$. Shannon breadth is
-$\exp(H)$, where
-$H=-\sum_i p_i\log p_i$ and
-$p_i=|w_i|/\sum_j|w_j|$; absolute weights are used because the unconstrained
-portfolios may contain short positions. With short positions, neither metric
-should be read literally as a count of positive holdings: both are
-portfolio-level summaries and say nothing about the diversity of market
-participants.
+For each asset, $\ell_{i,t}$ denotes the log change in its gross total-return
+index; the simple return is $r_{i,t}=\exp(\ell_{i,t})-1$. In the static
+holdout, covariance estimates and target weights are fit once on the
+training sample, and the portfolio is restored to its target weights daily:
+$r_{p,t}=\sum_iw_i r_{i,t}$. This convention is distinct from holding shares
+fixed throughout the test period.
 
-For a portfolio return $r_{p,t}$, the annualized Sharpe is computed as
-$\sqrt{252}\,(\bar r_p-r_f/252)/s_p$, with daily sample standard deviation
-$s_p$. The risk comparison is reported in percent per trading day. The primary
-Sharpe-difference interval is estimated by a paired moving-block bootstrap
-with 5,000 replications and 20-day blocks, using the same resampled date
-indices for both portfolios. The reported one-sided $p$-value tests whether
-the Sharpe difference is non-positive; no corresponding confidence interval
-for the volatility difference is available. Accordingly, the volatility gap
-is descriptive and is not presented as an inferentially established effect.
+The rolling sensitivity estimates each covariance matrix from the preceding
+504 observations, sets weights every 21 observations, and holds shares fixed
+within each 21-observation block. Portfolio wealth is reconstructed from
+asset-price relatives within each block. Twenty-five non-overlapping blocks
+cover 26 September 2023--29 September 2025. This rolling analysis shares its
+test observations with the fixed holdout and is a protocol sensitivity, not
+an independent replication.
 
-\subsection{Supplementary market data and sample construction}
+\subsection{Performance, turnover, and inference}
 
-Table~\ref{tab:sources} records the datasets used. The primary 38-stock panel
-supports the estimator comparison. A separate Bloomberg export supplies two
-VOM-labelled daily series, the NAFTRAC field \texttt{PR093}, and the
-USD/MXN exchange rate. A second Bloomberg workbook supplies daily fields for
-a recent 25-stock cross-section. These supplementary samples are used for
-descriptive regime conditioning and an aspect-ratio boundary check,
-respectively; they are not pooled with the primary return panel.
+We report annualized arithmetic mean return $252\bar r_p$, annualized
+volatility $\sqrt{252}s_p$, and annualized Sharpe
+$\sqrt{252}(\bar r_p-r_f/252)/s_p$, using a fixed 8\% annual risk-free rate.
+Turnover is one-way traded notional divided by pre-trade portfolio value.
+For the static protocol, daily turnover measures the trade needed to restore
+target weights after market drift; in the rolling design, turnover is
+measured at each rebalance.
 
-\begin{table}[ht]
-\centering
-\caption{Available data and role in the analysis.}
-\label{tab:sources}
-\small
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.1cm}>{\raggedright\arraybackslash}p{4.1cm}>{\raggedright\arraybackslash}p{2.5cm}Y}
-\toprule
-Source & Observed material & Availability & Role here \\
-\midrule
-BMV--Econom\'atica & 38 equities; 2,644 daily returns, 2011--2025 &
-Derived panel; raw licensed prices not redistributable &
-Primary common holdout and estimator comparison; universe selection may
-induce survivorship or selection bias \\
-Bloomberg VOM/FX export & Two VOM-labelled series, NAFTRAC
-\texttt{PR093}, USD/MXN; 2000--2026 & Daily CSV export; some dates absent &
-Convert VOM levels to MXN and condition holdout risks on training-period
-thresholds \\
-Bloomberg BMV/BIVA workbook & 275 instrument tabs and daily fields; 2000--2026 &
-Licensed XLSX export &
-Recompute the matched $N=25$, $T=100$, $q=0.25$ check using gross total returns \\
-Fama--French 5 factors & Daily U.S. factors, matched to BMV dates &
-Public factor file & Secondary pricing-model check \\
-\bottomrule
-\end{tabularx}
-\end{table}
+No transaction-cost observations are available. We therefore subtract
+hypothetical proportional costs of 0, 5, 10, 25, and 50 basis points per
+unit of one-way traded notional. Initial deployment costs, taxes,
+market impact, liquidity limits, and security-specific bid--ask spreads are
+not estimated. The cost scenarios are sensitivities, not measurements of
+Mexican implementation costs.
 
-\paragraph{Currency treatment and VOM-regime construction.}
-The Bloomberg export identifies \texttt{VOMXCUS\$ Index} and
-\texttt{VOMXGUS\$ Index} as USD-denominated series and includes daily
-\texttt{MXN BGN Curncy}. Following the export note, we convert each observed
-VOM level to pesos by multiplying by the same-date USD/MXN rate. We use no
-cross-series comparison of raw levels: in particular, NAFTRAC's exported field
-is \texttt{PR093}, not a closing price, so it is not treated as a return or
-compared numerically with either VOM series. For each VOM series separately,
-the high-state threshold is its 90th percentile in the primary training period
-(18 July 2011--30 April 2021), and this fixed threshold is applied to matched
-holdout dates. There are 506 matched days (out of 529); the final VOM data
-date is 17 September 2025. The CSV does not include a Bloomberg field
-description for the VOM tickers; their interpretation as market-stress
-indicators is therefore provisional and should be checked against the
-terminal's field metadata before external publication.
-
-\paragraph{Recent high-dimensional cross-section.}
-The recent Bloomberg workbook has an issuer list and 275 instrument-specific
-tabs with daily market fields. For an independent high-dimensional check, we
-match the 25 securities in the prespecified diagnostic one-to-one to workbook
-tabs: WALMEX, KIMBERA, GCARSOA1, GMEXICOB, BIMBOA, SIGMAFA, SORIANAB,
-LIVEPOLC, KUOA, KUOB, PE\&OLES, GFNORTEO, VITROA, ARA, GRUMAB, GCC, ICHB,
-HERDEZ, ALSEA, ORBIA, SIMECB, CMRB, MEDICAB, VASCONI, and GFINBURO. We use
-Bloomberg's \texttt{TOT\_RETURN\_INDEX\_GROSS\_DVDS} field rather than unadjusted
-prices. The common level window is 12 May--29 September 2026 (101 levels);
-log returns run from 13 May through 29 September (100 observations), giving
-$q=25/100=0.25$. This window is used to re-estimate the sample correlation
-spectrum and conditioning; unlike the primary panel it provides no subsequent
-holdout. The fixed 25-ticker set is not a random sample of the 275-tab
-universe and is used only for this diagnostic.
-
-\subsection{Robustness and boundary checks}
-
-For a non-Gaussian sensitivity check, each training-series marginal is
-rank-transformed to normal scores, rescaled to its original volatility, and
-used to estimate the correlation structure; all portfolios are still evaluated
-on the untransformed holdout returns. This is a rank-based Gaussianization, not
-a fitted multivariate Student-$t$ copula.
-
-We also report (i) the risk of the four primary portfolios conditional on the
-two converted VOM-series thresholds; (ii) the re-estimated condition-number
-comparison at $q=0.25$; (iii) a rolling real-data $q=1.9$
-check, where $T<N$; and (iv) regressions of the four primary holdout portfolio
-excess-return series on the public Fama--French five factors. These are
-separate validation exercises, not additional observations in the main
-estimator comparison.
+Paired moving-block bootstrap intervals use 20,000 replications and common
+resampled date indices (10-, 20-, and 42-observation blocks for the static
+holdout; 10-, 21-, and 42-observation blocks for the rolling comparison).
+HAC standard errors with 20 lags provide two-sided tests for Sharpe and
+volatility differences. Inference is conditional on the fitted weights and
+chosen universe and does not propagate covariance-estimation, universe
+selection, or model-selection uncertainty. The fixed-holdout RIE--SM
+comparison is the primary inferential contrast; the rolling and $1/N$
+comparisons are sensitivity analyses. We do not adjust for the number of
+secondary comparisons.
 
 \section{Results}
 
-\subsection{Common-holdout comparison}
-\label{sec:holdout}
+\subsection{Fixed chronological holdout}
 
-Table~\ref{tab:primary} reports results recalculated on the same 2,115/529
-training/test split using the project's shared estimator implementations.
-RIE has the lowest realized volatility, 0.679\% per day versus 0.688\% for SM,
-a relative difference of approximately 1.3\%. The difference in Sharpe ratios
-is small and imprecise: RIE is $-0.233$ versus $-0.244$ for SM. The two
-intermediate estimators show why the result should not be described as a
-monotone ordering by estimator sophistication: LW has slightly lower realized
-volatility, and clipping has a materially less negative point-estimate Sharpe
-on this particular holdout.
+Table~\ref{tab:primary} reports the four unconstrained portfolios. RIE has
+lower holdout volatility than SM (0.6952\% versus 0.6998\% per day), but its
+Sharpe is lower ($-0.232$ versus $-0.207$). Ledoit--Wolf has both the lowest
+volatility and the highest Sharpe among covariance-based estimators. The
+ranking therefore depends on the loss function; a volatility reduction by
+itself is not evidence of improved investor outcomes.
 
 \begin{table}[ht]
 \centering
-\caption{Minimum-variance portfolios on the common BMV holdout.
-Volatility is percent per trading day; Sharpe is annualized.}
+\caption{Unconstrained portfolios on the fixed holdout. Volatility is percent
+per trading day; Sharpe is annualized.}
 \label{tab:primary}
 \small
 \begin{tabular}{lrrrrr}
 \toprule
-Estimator & In-sample vol. & Holdout vol. & Sharpe & NEA & $\exp(H)$ \\
+Estimator & Training vol. & Holdout vol. & Sharpe & NEA & $\exp(H)$ \\
 \midrule
-Sample (SM) & 0.7077 & 0.6884 & $-0.244$ & 9.36 & 26.92 \\
-Clipping (CL) & 0.7182 & 0.6860 & $-0.110$ & 9.32 & 26.54 \\
-Ledoit--Wolf (LW) & 0.7059 & 0.6837 & $-0.235$ & 9.75 & 26.93 \\
-RIE & 0.7103 & \textbf{0.6794} & $-0.233$ & 9.86 & 26.92 \\
+Sample (SM) & 0.7093 & 0.6998 & $-0.207$ & 10.58 & 25.37 \\
+Clipping (CL) & 0.7079 & 0.7084 & $-0.339$ & 9.50 & 27.10 \\
+Ledoit--Wolf (LW) & 0.7071 & \textbf{0.6965} & $-0.206$ & 10.91 & 25.57 \\
+RIE & 0.7097 & 0.6952 & $-0.232$ & 10.85 & 25.91 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Figure~\ref{fig:holdout} visualizes the four holdout volatilities. Relative
-to SM, the RIE point estimate is lower by 0.0090 percentage points per
-trading day, or 1.31\%; the absolute daily difference is small. The
-unadjusted daily Sharpe estimates are negative under the assumed 8\% risk-free
-rate, and clipping has the least negative estimate. Estimator rankings
-therefore depend on the selected loss or performance statistic.
+The RIE-minus-SM daily volatility difference is $-0.00462$ percentage points
+(20-observation block-bootstrap 95\% interval $[-0.00713,-0.00113]$; HAC
+$p=0.0036$). The Sharpe difference is $-0.0248$ (95\% interval
+$[-0.0451,-0.0038]$; HAC $p=0.015$). The Sharpe interval remains below zero
+at block lengths 10 and 42. Under long-only constraints, RIE's Sharpe
+difference from SM is $-0.0113$ (20-observation interval
+$[-0.0242,0.0028]$; HAC $p=0.086$), while its volatility difference remains
+negative. These intervals are conditional on weights fitted in the training
+sample.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.88\textwidth]{../figures/figure1_primary_holdout.png}
-\caption{Realized daily volatility on the common 529-day holdout. The dashed
-line marks the sample-covariance estimate. The vertical axis is truncated to
-show the small differences; this is a descriptive comparison and no
-volatility-difference confidence interval is available.}
-\label{fig:holdout}
-\end{figure}
+RIE's unconstrained effective number of assets is 10.85 compared with 10.58
+for SM; Shannon effective breadth is 25.91 versus 25.37. Both measures are
+far below the 37 assets of the equal-weight portfolio. These statistics
+describe portfolio weights and should not be interpreted as market-wide
+investor diversity.
 
-RIE's NEA is about 5.3\% higher than SM's on this split. The Shannon breadth
-values, however, are almost identical (26.92 for both), and CL has a marginally
-lower NEA but a slightly lower Shannon breadth. The conclusion is therefore
-metric-dependent: spectral cleaning does not reduce either measure relative to
-SM here, but the evidence for a practically large increase in diversity is
-weak. This distinction is important when connecting portfolio concentration to
-the broader concept of decision heterogeneity.
+\subsection{Long-only portfolios and the naive benchmark}
 
-Figure~\ref{fig:breadth} puts both breadth statistics on separate scales.
-RIE's higher NEA does not translate into a higher Shannon breadth, and
-eigenvalue clipping has a lower NEA than SM. The defensible conclusion is
-that RIE did not reduce either reported breadth measure relative to SM in
-this sample, not that it produces a broad or diversified portfolio in an
-absolute sense.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.88\textwidth]{../figures/figure2_allocation_breadth.png}
-\caption{Two allocation-breadth summaries for the four optimized portfolios.
-Each panel has its own vertical scale. Because short sales are allowed, these
-statistics summarize weight concentration and are not literal counts of
-long positions.}
-\label{fig:breadth}
-\end{figure}
-
-The paired moving-block bootstrap, with 5,000 resamples and 20-day blocks, gives
-an observed RIE--SM Sharpe difference of $+0.011$, a 95\% interval
-$[-0.021,0.057]$, and one-sided $p=0.186$. We cannot reject equal Sharpe
-performance on this holdout. The volatility difference is descriptive and is
-not presented as a statistically significant treatment effect.
-
-\subsection{Distributional sensitivity and market-regime validation}
-
-In the rank-Gaussianized sensitivity, the ordering by holdout-to-training
-volatility ratio remains CL, RIE, LW, SM; RIE does not rank first.
-Table~\ref{tab:tails} gives the corresponding realized holdout volatilities.
+The long-only results sharpen the applied comparison. On the fixed holdout,
+$1/N$ has a Sharpe of 0.450 and an annualized arithmetic mean return of
+13.72\%, compared with $-0.035$ and 7.62\% for RIE. The $1/N$ portfolio also
+has higher volatility (12.72\% versus 11.10\%). The paired RIE-minus-$1/N$
+Sharpe estimate is $-0.485$, but its interval is wide
+($[-1.068,0.053]$; HAC $p=0.099$); the point-estimate ranking is not a
+precise estimate of expected performance beyond this sample.
 
 \begin{table}[ht]
 \centering
-\caption{Holdout volatility under raw and rank-Gaussianized training marginals.
-Evaluation always uses the same untransformed holdout returns.}
-\label{tab:tails}
+\caption{Long-only portfolios on the fixed holdout. Returns and volatility
+are annualized percentages; turnover is mean one-way traded notional per day.}
+\label{tab:longonly}
 \small
-\begin{tabular}{lrr}
+\begin{tabular}{lrrrrr}
 \toprule
-Estimator & Raw training returns & Rank-Gaussianized training returns \\
+Estimator & Mean return & Volatility & Sharpe & NEA & Turnover \\
 \midrule
-SM & 0.6884 & 0.6942 \\
-CL & 0.6860 & 0.6887 \\
-LW & 0.6837 & 0.6919 \\
-RIE & \textbf{0.6794} & \textbf{0.6870} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-For the primary training panel, per-asset excess kurtosis ranges from 1.18 to
-20.20, with median 5.34, confirming substantial non-Gaussian tails. The
-rank-Gaussianized sensitivity in Table~\ref{tab:tails} preserves the lower
-holdout volatility of RIE relative to SM, but places CL first by the
-holdout-to-training risk ratio. This robustness result is descriptive, and
-does not establish that one estimator dominates under every distribution or
-loss criterion.
-
-Table~\ref{tab:vomregime} compares the same static portfolios on matched
-holdout days above and below each converted VOM-series threshold. For
-\texttt{VOMXCUS\$}, 188 matched days exceed the fixed training-period
-90th-percentile threshold and 318 fall below it; realized portfolio
-volatility is 30--32\% higher in the high state for all four estimators.
-RIE's standard deviation is marginally lowest in both states. For
-\texttt{VOMXGUS\$}, the high-state volatility increase is smaller and the
-estimator differences are likewise modest. These conditional standard
-deviations are descriptive rather than causal or inferential tests; the
-Bloomberg export lacks field documentation needed to assign a definitive
-economic interpretation to the VOM series. Figure~\ref{fig:regimes} shows
-the full set of conditional standard deviations and makes clear that the
-size of the high/low difference varies by proxy.
-
-\begin{table}[ht]
-\centering
-\caption{Holdout daily portfolio volatility by converted VOM-series state
-(percent per day). Thresholds are fixed at each series' training-period
-90th percentile.}
-\label{tab:vomregime}
-\small
-\begin{tabular}{llrrrrr}
-\toprule
-Proxy & State & Days & SM & CL & LW & RIE \\
-\midrule
-\texttt{VOMXCUS\$} & Below threshold & 318 & 0.6041 & 0.6033 & 0.5989 & 0.5961 \\
- & Above threshold & 188 & 0.7953 & 0.7873 & 0.7911 & 0.7845 \\
-\texttt{VOMXGUS\$} & Below threshold & 333 & 0.6686 & 0.6719 & 0.6632 & 0.6594 \\
- & Above threshold & 173 & 0.7091 & 0.6905 & 0.7052 & 0.6998 \\
+Sample & 7.74 & 11.18 & $-0.023$ & 13.72 & 0.52\% \\
+Clipping & 7.65 & 11.20 & $-0.031$ & 13.25 & 0.51\% \\
+Ledoit--Wolf & 7.76 & 11.13 & $-0.022$ & 14.04 & 0.52\% \\
+RIE & 7.62 & 11.10 & $-0.035$ & 14.03 & 0.52\% \\
+$1/N$ & \textbf{13.72} & 12.72 & \textbf{0.450} & 37.00 & 0.61\% \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.96\textwidth]{../figures/figure3_market_regimes.png}
-\caption{Holdout daily volatility conditional on the converted VOM-series
-thresholds. Thresholds are estimated on the training period and held fixed;
-no causal interpretation or regime-difference significance test is
-available. Proxy field definitions remain unverified.}
-\label{fig:regimes}
+\includegraphics[width=0.94\textwidth]{../figures/figure5_static_benchmarks.png}
+\caption{Annualized mean return and volatility for long-only portfolios on
+the fixed holdout. $1/N$ has the highest mean return and Sharpe, with higher
+realized volatility.}
+\label{fig:benchmark}
 \end{figure}
 
-\subsection{\texorpdfstring{Sensitivity to $q$}{Sensitivity to q}}
+\subsection{Rolling deployment and cost sensitivity}
 
-Recomputation from the matched 25-stock Bloomberg panel yields 100 daily
-returns (13 May--29 September 2026), so $q=25/100=0.25$. Using the gross
-total-return index, the sample covariance condition number is 279.55 and the
-sample correlation condition number is 24.34. The largest sample-correlation
-eigenvalue is 4.178, above the Marchenko--Pastur upper edge 2.25; one
-eigenvalue lies above that edge. Eigenvalue clipping and diagonal
-renormalization reduce the correlation condition number to 5.33 and the
-covariance condition number to 128.49. Using unadjusted \texttt{PX\_LAST}
-instead gives a correlation condition number of 24.31, a largest eigenvalue
-of 4.170, and a clipped correlation condition number of 5.30. Clipping
-reduces the correlation condition number by 78.1\% and the covariance
-condition number by 54.0\%. The largest correlation eigenvalue, 4.178, is
-1.86 times the random-matrix upper noise edge, with one eigenvalue above that
-edge. This recent window illustrates spectral stabilization but has no
-subsequent holdout, so improved conditioning cannot establish lower future
-portfolio risk. These figures are recomputed from daily observations in the
-latest workbook, not from reported summary statistics.
+The 25-block rolling comparison does not establish a performance advantage
+for RIE over SM. For long-only portfolios, annualized Sharpe is $-0.646$ for
+RIE and $-0.736$ for SM; their difference of $+0.090$ has a 21-observation
+block-bootstrap 95\% interval $[-0.052,0.185]$ and HAC $p=0.176$. The
+long-only $1/N$ portfolio attains a Sharpe of 0.767 and a mean return of
+18.19\%. Its Sharpe difference from RIE is $1.413$ (RIE minus $1/N$ is
+$-1.413$; 95\% interval $[-2.333,-0.641]$; HAC $p=0.0013$). This contrast
+is exploratory because it uses the same test history and one set of model
+choices.
+
+Mean one-way turnover per actual rebalance is 5.05\% for long-only RIE and
+2.81\% for $1/N$. At the assumed upper cost of 50 basis points per one-way
+turnover, annualized mean return is 0.57\% for RIE and 18.03\% for $1/N$;
+at 10 basis points, the corresponding estimates are 0.80\% and 18.16\%.
+These differences do not establish expected future returns: the assumed
+costs are not transaction data, and initial portfolio formation costs are
+excluded.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.88\textwidth]{../figures/figure4_conditioning.png}
-\caption{Sample versus clipped condition numbers for covariance and
-correlation matrices in the 25-stock gross-total-return panel
-($q=0.25$; logarithmic vertical scale). Better conditioning is a numerical
-property, not by itself an out-of-sample performance result.}
-\label{fig:conditioning}
+\includegraphics[width=\textwidth]{../figures/figure6_rolling_walkforward.png}
+\caption{Annualized arithmetic return and volatility for the rolling
+21-observation buy-and-hold portfolios. Both panels use a 504-observation
+lookback.}
+\label{fig:rolling}
 \end{figure}
-
-At $q=1.9$ with 38 assets and 20 training days, the sample and unmodified RIE
-covariance estimates are singular in all ten rolling windows and require a
-pseudo-inverse. Across the following 60-day test windows, mean annualized
-realized volatility is 16.57\% for SM, 11.78\% for CL, 12.12\% for LW, and
-144.43\% for RIE (window-to-window standard deviation 320.17\% for RIE).
-Thus the unmodified RIE implementation is unstable in this $q>1$ regime; no
-extension to $q\geq1$ is claimed. Figure~\ref{fig:qgt1} uses a logarithmic
-scale because the RIE mean is an order of magnitude larger than the other
-three estimates. The exceptionally large 320.17\% between-window standard
-deviation for RIE further indicates that its mean alone understates the
-instability. The pseudo-inverse fallback makes these results a stress test of
-the full pipeline, not a comparison of four equally well-posed estimators.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.88\textwidth]{../figures/figure5_q_gt_1.png}
-\caption{Mean annualized realized volatility in ten deliberately short
-$q=1.9$ training windows (logarithmic vertical scale). RIE's
-window-to-window standard deviation is 320.17\%; the other estimators'
-standard deviations were not preserved in the available output.}
-\label{fig:qgt1}
+\includegraphics[width=0.96\textwidth]{../figures/figure7_transaction_cost_sensitivity.png}
+\caption{Long-only rolling portfolio returns under assumed proportional
+transaction-cost scenarios. The costs are hypothetical rather than measured
+Mexican trading costs.}
+\label{fig:costs}
 \end{figure}
-
-The distributional sensitivity in Table~\ref{tab:tails} is visualized in
-Figure~\ref{fig:tails}. Training marginals are rank-Gaussianized and
-rescaled, but evaluation remains on the unchanged holdout. RIE still has
-lower holdout volatility than SM under this transformation; the result does
-not hold against every alternative estimator, nor does it establish a
-ranking by the holdout-to-training risk ratio.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.88\textwidth]{../figures/figure6_distributional_robustness.png}
-\caption{Holdout volatility after fitting on raw versus
-rank-Gaussianized training marginals. The holdout is not transformed.
-Truncated vertical scale highlights small differences.}
-\label{fig:tails}
-\end{figure}
-
-\subsection{Fama--French factor check}
-\label{sec:factor}
-
-On the 522 holdout dates matched to the public daily Fama--French five-factor
-file \cite{famafrench2015}, the RIE portfolio's estimated daily alpha is
-0.000002 with $p=0.995$.
-The other three estimators likewise have insignificant alphas ($p\geq0.887$).
-This check does not support an abnormal-return claim. Because the factors are
-constructed from U.S. equities while the test portfolios are Mexican, this
-regression is an exploratory cross-market exposure diagnostic, not a
-validated Mexican-equity pricing model. Its insignificant intercepts do not
-establish factor neutrality.
 
 \section{Discussion}
 
-The primary answer is deliberately narrow. On one common BMV holdout, RIE
-has the lowest point-estimate realized volatility, 1.31\% below SM in relative
-terms, but the magnitude is small and the available bootstrap tests Sharpe
-differences rather than volatility differences. Its Sharpe advantage over SM
-is not statistically distinguishable from zero. This evidence is compatible
-with a modest realized-risk improvement in this split; it does not establish
-a general out-of-sample superiority of nonlinear shrinkage.
+The central empirical result is not that one covariance estimator dominates.
+In the fixed holdout, RIE achieves slightly lower volatility but a lower
+Sharpe than the sample estimator; Ledoit--Wolf performs better on both
+reported risk and Sharpe point estimates among the covariance-based
+unconstrained portfolios. Long-only estimation reduces reliance on short
+positions but does not make covariance optimization outperform the naive
+benchmark in this sample. The rolling analysis reaches the same practical
+warning: point-in-time estimator rankings and implementation rules matter.
 
-Allocation breadth also admits no unqualified "more diversified" conclusion.
-RIE's inverse-Herfindahl count rises by 0.50 effective holdings (5.3\%) while
-its Shannon breadth is unchanged at the reported precision. Moreover, the
-weights are unconstrained and may be short, so these indices describe weight
-concentration rather than literal portfolio membership. They do not measure
-the diversity of investors, strategies, or beliefs in the market.
+For emerging-market investment research, this distinction is material.
+Performance claims based only on estimated or realized minimum variance can
+omit the benchmark an allocator could actually hold and the turnover needed
+to maintain optimized weights. Our cost grid demonstrates how to report
+such sensitivities, but it does not establish local execution costs,
+investability, or a causal effect of market institutions. Those questions
+require quote-level spreads, trading volumes, market impact, a local
+risk-free series, and institutional portfolio constraints.
 
-The regime comparisons are consistent with higher portfolio risk on
-high-threshold VOM-labelled days, especially for VOMXCUS; the difference is
-smaller for VOMXGUS. However, ticker semantics, data fields, and currency
-interpretation are not documented in the export, and the exercise has no
-reported uncertainty test. These results motivate validation of the proxy
-metadata, not a claim that an identified economic regime causes a volatility
-increase.
-
-The $q=0.25$ cross-section shows that clipping can materially improve
-numerical conditioning, including under a gross-total-return input. A better
-condition number can reduce sensitivity of matrix inversion but does not
-demonstrate improved realized risk by itself. Conversely, the $q=1.9$
-experiment is a strong failure signal for this particular implementation:
-unmodified RIE retains structural singularity and its realized-risk estimates
-are extremely unstable. It is not a theorem about RIE in general, since the
-kernel estimator and pseudo-inverse fallback were not redesigned for $q>1$.
-
-Several limitations constrain external validity. First, the primary price
-source is licensed, and the universe construction is not documented in enough
-detail to rule out survivorship or selection bias. Second, one static
-train/test split does not substitute for repeated rolling-origin evaluation;
-no transaction costs, turnover, market impact, liquidity, short-sale
-frictions, or leverage limits are modeled. Third, the assumed 8\% risk-free
-rate is not varied, and no confidence interval for the volatility difference
-is available. Fourth, the Bloomberg VOM definitions need independent
-confirmation and the 25-stock recent panel is a fixed diagnostic set, not a
-random sample of the 275-tab universe. Finally, the U.S. factor regression is
-not a country-matched pricing test. The paper's conclusion should therefore
-be read as evidence about a particular panel, split, implementation, and
-portfolio construction.
+Several limitations remain substantive. The 37 names were mapped from a
+retrospective security list, not a point-in-time BMV/BIVA membership
+database; survivor and selection bias cannot be ruled out. One 20\% holdout
+and one overlapping rolling sensitivity are not independent replications.
+Bootstrap and HAC inference condition on weights and the selected universe.
+The cost exercise uses assumed basis-point rates rather than observed
+execution prices and omits liquidity limits, market impact, short-sale
+frictions, taxes, and initial deployment. The risk-free rate is fixed at
+8\% rather than matched to a local yield series. These limitations prevent
+claims about an investable strategy, market-wide diversification, or
+generalization to other emerging economies.
 
 \section{Conclusion}
 
-For the common 38-stock BMV holdout, nonlinear spectral cleaning is associated
-with a small reduction in realized minimum-variance risk and no measured
-reduction in either reported allocation-breadth measure relative to the
-sample estimator. The Sharpe-ratio difference is not statistically
-significant, and Shannon breadth is unchanged. The supplementary evidence
-shows descriptive regime dependence, numerical conditioning gains at
-$q=0.25$, and a severe instability boundary for the unmodified RIE
-implementation at $q=1.9$. The evidence supports considering RIE as one
-covariance-estimation option in the low-$q$ setting studied, with repeated
-out-of-sample monitoring and explicit estimator-validity checks. It does not
-establish universal estimator dominance or market-wide changes in investor
-heterogeneity.
+For a daily gross-total-return panel of 37 Mexican equities, spectral
+covariance cleaning changes the estimated portfolio comparison but does not
+yield a consistent Sharpe advantage. RIE lowers fixed-holdout volatility
+relative to SM while its Sharpe is lower; under long-only constraints, $1/N$
+has the highest Sharpe point estimate. The same benchmark remains ahead in
+the rolling analysis and across the stated assumed-cost scenarios. The
+evidence supports a practical conclusion for this sample: covariance
+cleaning should be assessed jointly with simple benchmarks, portfolio
+constraints, turnover, and the timing of rebalancing.
+
+The next research step is a multi-market, point-in-time panel of emerging
+equities with delisted securities, consistent total-return histories, and
+institution-specific trading-cost data. Such a design could test whether
+the benchmark and estimator patterns documented here extend beyond this
+selected Mexican panel and whether they have implications for local
+investment institutions.
 
 \paragraph{Data availability.}
-The Fama--French five-factor series is available from the Kenneth French Data
-Library (\url{https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html}).
-The primary Econom\'atica prices and supplementary Bloomberg exports
-(the VOM/NAFTRAC/USD--MXN CSV and the 275-instrument BMV/BIVA workbook,
-downloaded in September 2026) are subject to data-provider terms and are not
-included. This working paper's companion repository
+The Bloomberg workbook containing daily
+\texttt{TOT\_RETURN\_INDEX\_GROSS\_DVDS} data is licensed and is not
+redistributed. The public repository
 (\url{https://github.com/IvliCaesar/bmv-spectral-portfolio-cleaning})
-contains only aggregate
-summary tables and charts, not daily prices, returns, security weights, or
-licensed exports. Those summary outputs allow readers to recreate the
-displayed graphics and check selected arithmetic; they do not permit
-re-estimation of the portfolios, bootstrap, factor regressions, regime
-classification, or eigenspectra. The companion repository does not include
-the original estimator-analysis scripts; full replication therefore requires
-lawful access to both licensed inputs and the complete analysis workflow.
+contains aggregate outcomes, a ticker-to-workbook mapping, analysis code,
+and figure-generation scripts; it contains no daily prices, returns,
+security weights, or licensed exports. Reproduction requires lawful access
+to a compatible Bloomberg export with the documented tabs and fields.
 
 \begin{thebibliography}{9}
 \small
@@ -572,19 +369,10 @@ lawful access to both licensed inputs and the complete analysis workflow.
 H. Markowitz, Portfolio selection, \textit{The Journal of Finance} 7 (1952),
 no.~1, 77--91.
 
-\bibitem{marchenko1967}
-V.~A. Marchenko and L.~A. Pastur, Distribution of eigenvalues for some sets of
-random matrices, \textit{Mathematics of the USSR-Sbornik} 1 (1967), no.~4,
-457--483.
-
 \bibitem{laloux1999}
 L. Laloux, P. Cizeau, J.-P. Bouchaud, and M. Potters, Noise dressing of
 financial correlation matrices, \textit{Physical Review Letters} 83 (1999),
 no.~7, 1467--1470.
-
-\bibitem{pafka2002}
-S. Pafka and I. Kondor, Noisy covariance matrices and portfolio optimization,
-\textit{The European Physical Journal B} 27 (2002), 277--280.
 
 \bibitem{ledoitwolf2004}
 O. Ledoit and M. Wolf, Honey, I shrunk the sample covariance matrix,
@@ -600,9 +388,10 @@ V. DeMiguel, L. Garlappi, and R. Uppal, Optimal versus naive diversification:
 how inefficient is the $1/N$ portfolio strategy?, \textit{The Review of
 Financial Studies} 22 (2009), no.~5, 1915--1953.
 
-\bibitem{famafrench2015}
-E.~F. Fama and K.~R. French, A five-factor asset pricing model,
-\textit{Journal of Financial Economics} 116 (2015), no.~1, 1--22.
+\bibitem{bekaert2007}
+G. Bekaert, C. R. Harvey, and C. Lundblad, Liquidity and expected returns:
+Lessons from emerging markets, \textit{The Review of Financial Studies} 20
+(2007), no.~6, 1783--1831.
 
 \end{thebibliography}
 

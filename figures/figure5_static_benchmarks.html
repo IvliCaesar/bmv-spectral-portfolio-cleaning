@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #vis.vega-embed {
+      width: 100%;
+      display: flex;
+    }
+
+    #vis.vega-embed details,
+    #vis.vega-embed details summary {
+      position: relative;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@6"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.1"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@7"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    (function(vegaEmbed) {
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300, "stroke": null}, "axis": {"grid": true, "gridColor": "#E8E8E8", "labelFontSize": 12, "titleFontSize": 13}, "legend": {"labelFontSize": 10, "orient": "bottom"}, "title": {"anchor": "start", "fontSize": 17}}, "data": {"name": "data-424bcff5ea9789d0b9bc8c381fbe2675"}, "mark": {"type": "circle", "opacity": 0.9, "size": 180}, "description": "Five long-only portfolios on the same 741-day holdout. The equally weighted benchmark has higher volatility but a larger annualized arithmetic return and Sharpe than the GMV portfolios.", "encoding": {"color": {"field": "portfolio", "scale": {"domain": ["Sample", "Eigenvalue clipping", "Ledoit-Wolf", "RIE", "Equal-weight 1/N"], "range": ["#4C78A8", "#F58518", "#54A24B", "#B279A2", "#E45756"]}, "title": "Portfolio", "type": "nominal"}, "tooltip": [{"field": "portfolio", "title": "Portfolio", "type": "nominal"}, {"field": "holdout_annualized_mean_return_pct", "format": ".2f", "title": "Annualized mean return (%)", "type": "quantitative"}, {"field": "holdout_annualized_volatility_pct", "format": ".2f", "title": "Annualized volatility (%)", "type": "quantitative"}, {"field": "holdout_annualized_sharpe_rf_8pct", "format": ".3f", "title": "Sharpe (8% risk-free rate)", "type": "quantitative"}, {"field": "mean_one_way_turnover_per_rebalance", "format": ".3%", "title": "Mean one-way turnover per day", "type": "quantitative"}], "x": {"field": "holdout_annualized_volatility_pct", "scale": {"domain": [9, 14], "zero": false}, "title": "Annualized realized volatility (%)", "type": "quantitative"}, "y": {"field": "holdout_annualized_mean_return_pct", "scale": {"domain": [0, 16], "zero": false}, "title": "Annualized arithmetic mean return (%)", "type": "quantitative"}}, "height": 340, "title": "The long-only 1/N benchmark has the highest holdout Sharpe", "width": 650, "$schema": "https://vega.github.io/schema/vega-lite/v6.4.1.json", "datasets": {"data-424bcff5ea9789d0b9bc8c381fbe2675": [{"estimator": "Sample", "constraint": "Long-only", "training_volatility_pct_per_day": 0.7336738311198834, "holdout_annualized_mean_return_pct": 7.739337571827491, "holdout_volatility_pct_per_day": 0.7041961888456542, "holdout_annualized_volatility_pct": 11.178767939310465, "holdout_annualized_sharpe_rf_8pct": -0.0233176347865565, "effective_number_assets": 13.719114365129188, "shannon_effective_breadth": 16.618675216245954, "active_long_positions": 21, "maximum_weight": 0.1394400169645254, "gross_exposure": 1.0, "mean_one_way_turnover_per_rebalance": 0.0051681533522832, "portfolio": "Sample"}, {"estimator": "Eigenvalue clipping", "constraint": "Long-only", "training_volatility_pct_per_day": 0.7373715925775812, "holdout_annualized_mean_return_pct": 7.649810106449742, "holdout_volatility_pct_per_day": 0.7053012530876867, "holdout_annualized_volatility_pct": 11.196310290313471, "holdout_annualized_sharpe_rf_8pct": -0.03127725871024, "effective_number_assets": 13.246399883322368, "shannon_effective_breadth": 16.028436102929895, "active_long_positions": 22, "maximum_weight": 0.1438334025431237, "gross_exposure": 1.0, "mean_one_way_turnover_per_rebalance": 0.0050610673745754, "portfolio": "Eigenvalue clipping"}, {"estimator": "Ledoit-Wolf", "constraint": "Long-only", "training_volatility_pct_per_day": 0.7301029663071614, "holdout_annualized_mean_return_pct": 7.759569817224785, "holdout_volatility_pct_per_day": 0.7011682124079818, "holdout_annualized_volatility_pct": 11.130700303531398, "holdout_annualized_sharpe_rf_8pct": -0.0216006339420471, "effective_number_assets": 14.03865964690705, "shannon_effective_breadth": 16.84555521872041, "active_long_positions": 21, "maximum_weight": 0.1349128606063788, "gross_exposure": 1.0000000000000002, "mean_one_way_turnover_per_rebalance": 0.0051732787035509, "portfolio": "Ledoit-Wolf"}, {"estimator": "RIE", "constraint": "Long-only", "training_volatility_pct_per_day": 0.7339442123235428, "holdout_annualized_mean_return_pct": 7.615756401745825, "holdout_volatility_pct_per_day": 0.6994941206306114, "holdout_annualized_volatility_pct": 11.10412492044248, "holdout_annualized_sharpe_rf_8pct": -0.0346036811551705, "effective_number_assets": 14.02597668202921, "shannon_effective_breadth": 16.80609139247764, "active_long_positions": 21, "maximum_weight": 0.1342901684332096, "gross_exposure": 1.0, "mean_one_way_turnover_per_rebalance": 0.0051677515625023, "portfolio": "RIE"}, {"estimator": "Equal-weight 1/N", "constraint": "Long-only", "training_volatility_pct_per_day": 0.8938048797113988, "holdout_annualized_mean_return_pct": 13.722903436634118, "holdout_volatility_pct_per_day": 0.8011227913405438, "holdout_annualized_volatility_pct": 12.717430053077807, "holdout_annualized_sharpe_rf_8pct": 0.4500047110736095, "effective_number_assets": 37.0, "shannon_effective_breadth": 37.00000000000004, "active_long_positions": 37, "maximum_weight": 0.027027027027027, "gross_exposure": 0.9999999999999998, "mean_one_way_turnover_per_rebalance": 0.0060568183793989, "portfolio": "Equal-weight 1/N"}]}};
+      var embedOpt = {"renderer": "svg", "mode": "vega-lite"};
+
+      function showError(el, error){
+          el.innerHTML = ('<div style="color:red;">'
+                          + '<p>JavaScript Error: ' + error.message + '</p>'
+                          + "<p>This usually means there's a typo in your chart specification. "
+                          + "See the javascript console for the full traceback.</p>"
+                          + '</div>');
+          throw error;
+      }
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt)
+        .catch(error => showError(el, error));
+    })(vegaEmbed);
+
+  </script>
+</body>
+</html>

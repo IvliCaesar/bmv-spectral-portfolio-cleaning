@@ -43,7 +43,7 @@ def primary_holdout() -> alt.Chart:
             y=alt.Y(
                 "holdout_volatility_pct_per_day:Q",
                 title="Realized volatility (% per trading day)",
-                scale=alt.Scale(domain=[0.675, 0.692], zero=False),
+                scale=alt.Scale(domain=[0.69, 0.715], zero=False),
             ),
             color=alt.Color(
                 "estimator:N",
@@ -54,6 +54,11 @@ def primary_holdout() -> alt.Chart:
                 alt.Tooltip("estimator:N", title="Estimator"),
                 alt.Tooltip("holdout_volatility_pct_per_day:Q", title="Holdout vol. (%/day)", format=".4f"),
                 alt.Tooltip("annualized_sharpe:Q", title="Annualized Sharpe", format=".3f"),
+                alt.Tooltip(
+                    "holdout_annualized_mean_return_pct:Q",
+                    title="Annualized arithmetic mean return (%)",
+                    format=".2f",
+                ),
             ],
         )
     )
@@ -62,19 +67,19 @@ def primary_holdout() -> alt.Chart:
     )
     baseline = alt.Chart(pd.DataFrame({"baseline": [sample]})).mark_rule(
         color="#303030", strokeDash=[5, 4]
-    ).encode(y=alt.Y("baseline:Q", scale=alt.Scale(domain=[0.675, 0.692])))
+    ).encode(y=alt.Y("baseline:Q", scale=alt.Scale(domain=[0.69, 0.715])))
     labels = points.mark_text(dy=-12, color="#222").encode(
         text=alt.Text("holdout_volatility_pct_per_day:Q", format=".4f")
     )
     return (
         (points + baseline + labels)
         .properties(
-            title="All estimators are close on the common 529-day holdout",
+            title="All estimators are close on the common 741-day holdout",
             width=650,
             height=340,
             description=(
-                "Daily realized volatility for four minimum-variance estimators. "
-                "RIE is 0.6794 percent versus 0.6884 percent for the sample estimator."
+                "Daily realized volatility from simple asset returns at daily target weights. "
+                "All four covariance estimators have similar holdout risk."
             ),
         )
         .configure_axis(grid=True, gridColor="#E8E8E8", labelFontSize=12, titleFontSize=13)
@@ -126,8 +131,8 @@ def allocation_breadth() -> alt.VConcatChart:
         .properties(
             title="Portfolio breadth depends on its definition",
             description=(
-                "RIE has 9.86 effective holdings versus 9.36 for sample covariance, "
-                "but both have Shannon effective breadth 26.92."
+                "RIE has 10.85 inverse-Herfindahl effective holdings versus 10.58 "
+                "for sample covariance; Shannon effective breadth is 25.91 versus 25.37."
             ),
         )
         .configure_axis(grid=True, gridColor="#E8E8E8", labelFontSize=11, titleFontSize=12)
@@ -235,111 +240,238 @@ def conditioning() -> alt.FacetChart:
     )
 
 
-def q_gt_1() -> alt.Chart:
-    frame = table("q_gt_1.csv")
-    frame["estimator"] = pd.Categorical(
-        frame["estimator"],
-        ["Sample", "Eigenvalue clipping", "Ledoit-Wolf", "RIE"],
+def static_benchmarks() -> alt.Chart:
+    frame = table("static_constraint_baselines.csv")
+    frame = frame.loc[frame["constraint"] == "Long-only"].copy()
+    frame["portfolio"] = frame["estimator"].replace(
+        {"Equal-weight 1/N": "Equal-weight 1/N"}
+    )
+    frame["portfolio"] = pd.Categorical(
+        frame["portfolio"],
+        ["Sample", "Eigenvalue clipping", "Ledoit-Wolf", "RIE", "Equal-weight 1/N"],
         ordered=True,
     )
-    points = (
+    return (
         alt.Chart(frame)
-        .mark_point(filled=True, size=180)
+        .mark_circle(size=180, opacity=0.9)
         .encode(
-            x=alt.X("estimator:N", title=None, sort=None, axis=alt.Axis(labelAngle=0)),
+            x=alt.X(
+                "holdout_annualized_volatility_pct:Q",
+                title="Annualized realized volatility (%)",
+                scale=alt.Scale(domain=[9, 14], zero=False),
+            ),
             y=alt.Y(
-                "mean_annualized_realized_volatility_pct:Q",
-                title="Mean annualized realized volatility (%)",
-                scale=alt.Scale(type="log", domain=[8, 200]),
+                "holdout_annualized_mean_return_pct:Q",
+                title="Annualized arithmetic mean return (%)",
+                scale=alt.Scale(domain=[0, 16], zero=False),
             ),
             color=alt.Color(
-                "estimator:N",
-                scale=alt.Scale(domain=["Sample", "Eigenvalue clipping", "Ledoit-Wolf", "RIE"], range=COLORS),
-                legend=None,
+                "portfolio:N",
+                scale=alt.Scale(
+                    domain=[
+                        "Sample",
+                        "Eigenvalue clipping",
+                        "Ledoit-Wolf",
+                        "RIE",
+                        "Equal-weight 1/N",
+                    ],
+                    range=COLORS + ["#E45756"],
+                ),
+                title="Portfolio",
             ),
             tooltip=[
-                alt.Tooltip("estimator:N", title="Estimator"),
-                alt.Tooltip("mean_annualized_realized_volatility_pct:Q", title="Mean annualized vol. (%)", format=".2f"),
-                alt.Tooltip("window_std_annualized_volatility_pct:Q", title="RIE window SD (%)", format=".2f"),
+                alt.Tooltip("portfolio:N", title="Portfolio"),
+                alt.Tooltip(
+                    "holdout_annualized_mean_return_pct:Q",
+                    title="Annualized mean return (%)",
+                    format=".2f",
+                ),
+                alt.Tooltip(
+                    "holdout_annualized_volatility_pct:Q",
+                    title="Annualized volatility (%)",
+                    format=".2f",
+                ),
+                alt.Tooltip(
+                    "holdout_annualized_sharpe_rf_8pct:Q",
+                    title="Sharpe (8% risk-free rate)",
+                    format=".3f",
+                ),
+                alt.Tooltip(
+                    "mean_one_way_turnover_per_rebalance:Q",
+                    title="Mean one-way turnover per day",
+                    format=".3%",
+                ),
             ],
         )
-    )
-    labels = points.mark_text(dy=-12, color="#222").encode(
-        text=alt.Text("mean_annualized_realized_volatility_pct:Q", format=".2f")
-    )
-    return (
-        (points + labels)
         .properties(
-            title="At q = 1.9, this unmodified RIE implementation is unstable",
+            title="The long-only 1/N benchmark has the highest holdout Sharpe",
             width=650,
-            height=300,
+            height=340,
             description=(
-                "Mean annualized realized volatility over ten short-window trials. "
-                "The RIE window-to-window standard deviation is 320.17 percent."
+                "Five long-only portfolios on the same 741-day holdout. "
+                "The equally weighted benchmark has higher volatility but a larger "
+                "annualized arithmetic return and Sharpe than the GMV portfolios."
             ),
         )
         .configure_axis(grid=True, gridColor="#E8E8E8", labelFontSize=12, titleFontSize=13)
         .configure_title(anchor="start", fontSize=17)
+        .configure_legend(orient="bottom", labelFontSize=10)
         .configure_view(stroke=None)
     )
 
 
-def distributional_robustness() -> alt.Chart:
-    frame = table("distributional_robustness.csv").melt(
-        id_vars="estimator",
-        var_name="training_transform",
-        value_name="volatility",
-    )
-    frame["training_transform"] = frame["training_transform"].map(
-        {
-            "raw_training_holdout_volatility_pct_per_day": "Raw",
-            "rank_gaussianized_training_holdout_volatility_pct_per_day": "Rank-Gaussianized",
-        }
-    )
-    frame["estimator"] = pd.Categorical(
-        frame["estimator"],
-        ["Sample", "Eigenvalue clipping", "Ledoit-Wolf", "RIE"],
+def rolling_walkforward() -> alt.FacetChart:
+    frame = table("rolling_walkforward_outcomes.csv")
+    frame["portfolio"] = frame["estimator"]
+    frame["portfolio"] = pd.Categorical(
+        frame["portfolio"],
+        ["Sample", "Eigenvalue clipping", "Ledoit-Wolf", "RIE", "Equal-weight 1/N"],
         ordered=True,
     )
     return (
         alt.Chart(frame)
-        .mark_line(point=alt.OverlayMarkDef(size=90), strokeWidth=2)
+        .mark_circle(size=145, opacity=0.9)
         .encode(
             x=alt.X(
-                "training_transform:N",
-                title=None,
-                sort=["Raw", "Rank-Gaussianized"],
-                axis=alt.Axis(labelAngle=0),
+                "holdout_annualized_volatility_pct:Q",
+                title="Annualized realized volatility (%)",
+                scale=alt.Scale(domain=[8, 14], zero=False),
             ),
             y=alt.Y(
-                "volatility:Q",
-                title="Holdout volatility (% per day)",
-                scale=alt.Scale(domain=[0.675, 0.70], zero=False),
+                "holdout_annualized_mean_return_pct:Q",
+                title="Annualized arithmetic mean return (%)",
+                scale=alt.Scale(domain=[-5, 20], zero=False),
             ),
             color=alt.Color(
-                "estimator:N",
-                scale=alt.Scale(domain=list(frame["estimator"].cat.categories), range=COLORS),
+                "portfolio:N",
+                scale=alt.Scale(
+                    domain=[
+                        "Sample",
+                        "Eigenvalue clipping",
+                        "Ledoit-Wolf",
+                        "RIE",
+                        "Equal-weight 1/N",
+                    ],
+                    range=COLORS + ["#E45756"],
+                ),
                 title="Estimator",
             ),
-            detail="estimator:N",
+            column=alt.Column(
+                "constraint:N",
+                title=None,
+                sort=["Unconstrained", "Long-only"],
+                header=alt.Header(labelFontSize=12),
+            ),
             tooltip=[
-                alt.Tooltip("estimator:N", title="Estimator"),
-                alt.Tooltip("training_transform:N", title="Training transformation"),
-                alt.Tooltip("volatility:Q", title="Holdout vol. (%/day)", format=".4f"),
+                alt.Tooltip("portfolio:N", title="Estimator"),
+                alt.Tooltip("constraint:N", title="Constraint"),
+                alt.Tooltip(
+                    "holdout_annualized_mean_return_pct:Q",
+                    title="Annualized mean return (%)",
+                    format=".2f",
+                ),
+                alt.Tooltip(
+                    "holdout_annualized_volatility_pct:Q",
+                    title="Annualized volatility (%)",
+                    format=".2f",
+                ),
+                alt.Tooltip(
+                    "holdout_annualized_sharpe_rf_8pct:Q",
+                    title="Sharpe (8% risk-free rate)",
+                    format=".3f",
+                ),
+                alt.Tooltip(
+                    "mean_one_way_turnover_per_rebalance:Q",
+                    title="Mean one-way turnover per rebalance",
+                    format=".3%",
+                ),
             ],
         )
         .properties(
-            title="Rank-Gaussianizing training data weakens, but preserves, RIE's edge over sample",
-            width=650,
-            height=280,
+            title="Rolling results are exploratory and depend on constraints",
+            width=330,
+            height=300,
             description=(
-                "Holdout volatility for four estimators after fitting on raw or "
-                "rank-Gaussianized training marginals. The holdout remains untransformed."
+                "Twenty-five monthly rebalances using a 504-trading-day lookback "
+                "and 21-day buy-and-hold periods. No transaction costs are included."
+            ),
+        )
+        .configure_axis(grid=True, gridColor="#E8E8E8", labelFontSize=11, titleFontSize=12)
+        .configure_title(anchor="start", fontSize=17)
+        .configure_legend(orient="bottom", labelFontSize=10)
+        .configure_view(stroke=None)
+    )
+
+
+def transaction_cost_sensitivity() -> alt.Chart:
+    frame = table("transaction_cost_sensitivity.csv")
+    frame = frame.loc[
+        (frame["design"] == "Rolling; 21-day buy-and-hold")
+        & (frame["constraint"] == "Long-only")
+    ].copy()
+    frame["portfolio"] = frame["estimator"]
+    frame["portfolio"] = pd.Categorical(
+        frame["portfolio"],
+        ["Sample", "Eigenvalue clipping", "Ledoit-Wolf", "RIE", "Equal-weight 1/N"],
+        ordered=True,
+    )
+    return (
+        alt.Chart(frame)
+        .mark_line(point=alt.OverlayMarkDef(size=80), strokeWidth=2)
+        .encode(
+            x=alt.X(
+                "one_way_cost_basis_points:Q",
+                title="Assumed cost (basis points per one-way turnover)",
+                axis=alt.Axis(tickMinStep=5),
+            ),
+            y=alt.Y(
+                "net_annualized_mean_return_pct:Q",
+                title="Net annualized arithmetic mean return (%)",
+                scale=alt.Scale(domain=[-2, 20], zero=False),
+            ),
+            color=alt.Color(
+                "portfolio:N",
+                scale=alt.Scale(
+                    domain=[
+                        "Sample",
+                        "Eigenvalue clipping",
+                        "Ledoit-Wolf",
+                        "RIE",
+                        "Equal-weight 1/N",
+                    ],
+                    range=COLORS + ["#E45756"],
+                ),
+                title="Portfolio",
+            ),
+            detail="portfolio:N",
+            tooltip=[
+                alt.Tooltip("portfolio:N", title="Portfolio"),
+                alt.Tooltip("one_way_cost_basis_points:Q", title="Assumed cost (bps)"),
+                alt.Tooltip(
+                    "net_annualized_mean_return_pct:Q",
+                    title="Net annualized return (%)",
+                    format=".2f",
+                ),
+                alt.Tooltip(
+                    "mean_one_way_turnover_per_rebalance:Q",
+                    title="Mean one-way turnover per rebalance",
+                    format=".1%",
+                ),
+            ],
+        )
+        .properties(
+            title="The equal-weight benchmark remains ahead under assumed trading costs",
+            width=700,
+            height=340,
+            description=(
+                "Net annualized arithmetic returns over monthly rolling portfolios, "
+                "after subtracting assumed costs of 0 to 50 basis points per one-way "
+                "turnover. These are scenarios, not measured Mexican trading costs."
             ),
         )
         .configure_axis(grid=True, gridColor="#E8E8E8", labelFontSize=12, titleFontSize=13)
         .configure_title(anchor="start", fontSize=17)
-        .configure_legend(orient="bottom", labelFontSize=11)
+        .configure_legend(orient="bottom", labelFontSize=10)
         .configure_view(stroke=None)
     )
 
@@ -350,8 +482,9 @@ def main() -> None:
         "figure2_allocation_breadth": allocation_breadth(),
         "figure3_market_regimes": market_regimes(),
         "figure4_conditioning": conditioning(),
-        "figure5_q_gt_1": q_gt_1(),
-        "figure6_distributional_robustness": distributional_robustness(),
+        "figure5_static_benchmarks": static_benchmarks(),
+        "figure6_rolling_walkforward": rolling_walkforward(),
+        "figure7_transaction_cost_sensitivity": transaction_cost_sensitivity(),
     }
     for name, chart in charts.items():
         export(chart, name)
